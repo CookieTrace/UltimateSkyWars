@@ -89,7 +89,6 @@ public class Events implements Listener {
 				if(fw.getResponse().getClickedButton().getText() != null){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText()).joinPlayer(p);
 				}
-
 			}
 		}
 
