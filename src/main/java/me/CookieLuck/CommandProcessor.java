@@ -62,11 +62,8 @@ public class CommandProcessor {
 			for (Integer integer : p.getServer().getLevels().keySet()) {
 				int id = (int) integer;
 				if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
-					if(plugin.getServer().getDefaultLevel() != plugin.getServer().getLevel(id)){
-						ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
-						fw.addButton(eb);
-					}
-
+					ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
+					fw.addButton(eb);
 				}
 
 

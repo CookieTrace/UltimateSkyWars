@@ -1,14 +1,31 @@
 package me.CookieLuck;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+
+import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.form.element.Element;
 import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.item.Item;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.plugin.Plugin;
+import cn.nukkit.scheduler.NukkitRunnable;
 import cn.nukkit.utils.TextFormat;
 
 public class Events implements Listener {
@@ -61,9 +78,8 @@ public class Events implements Listener {
 			FormWindowUSWS fw;
 			fw = (FormWindowUSWS) e.getWindow();
 			if(fw.id == 0){
+				ElementInput ei = new ElementInput("","7");
 				if(fw.getResponse() != null){
-					ElementInput ei = new ElementInput("","7");
-
 					FormWindowUSW fww = new FormWindowUSW(fw.getResponse().getClickedButton().getText(),"Players");
 					fww.addElement(ei);
 					e.getPlayer().showFormWindow(fww);
@@ -75,6 +91,7 @@ public class Events implements Listener {
 				if(fw.getResponse().getClickedButton().getText() != null){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText()).joinPlayer(p);
 				}
+
 			}
 		}
 
