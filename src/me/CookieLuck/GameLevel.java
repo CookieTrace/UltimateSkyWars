@@ -57,7 +57,7 @@ public class GameLevel {
 	}
 
 	
-	GameLevel(int id, List spawns,String world, int maxPlayers, Main plugin){
+	GameLevel(int id, List<Spawn> spawns,String world, int maxPlayers, Main plugin){
 
 		this(id,world,maxPlayers,plugin);
 		this.spawnList = spawns;
@@ -95,15 +95,15 @@ public class GameLevel {
 		gamestarted = false;
 		waiting = true;
 		building = true;
-		for(int i = 0; i<alive.size();i++){
-			alive.get(i).sendTitle("",TextFormat.DARK_AQUA+""+TextFormat.BOLD+""+p.getName()+" WON THE GAME!");
+		for (Player player : alive) {
+			player.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + p.getName() + " WON THE GAME!");
 		}
 
-		for(int i = 0; i<dead.size();i++){
-			dead.get(i).sendTitle("",TextFormat.DARK_AQUA+""+TextFormat.BOLD+""+p.getName()+" WON THE GAME!");
+		for (Player player : dead) {
+			player.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + p.getName() + " WON THE GAME!");
 		}
-		alive = new ArrayList<Player>();
-		dead = new ArrayList<Player>();
+		alive = new ArrayList<>();
+		dead = new ArrayList<>();
 		new Thread( new Runnable() {
 			public void run()  {
 				try  { Thread.sleep( 5000 ); }
@@ -114,10 +114,10 @@ public class GameLevel {
 					dead.get(i).setGamemode(0);
 				}
 
-				for(int i = 0; i<dead.size();i++){
-					Location loc = new Location(p.getServer().getDefaultLevel().getSpawnLocation().getX(),p.getServer().getDefaultLevel().getSpawnLocation().getY(),p.getServer().getDefaultLevel().getSpawnLocation().getZ(), p.getServer().getDefaultLevel());
-					dead.get(i).teleport(loc);
-					dead.get(i).setGamemode(0);
+				for (Player player : dead) {
+					Location loc = new Location(p.getServer().getDefaultLevel().getSpawnLocation().getX(), p.getServer().getDefaultLevel().getSpawnLocation().getY(), p.getServer().getDefaultLevel().getSpawnLocation().getZ(), p.getServer().getDefaultLevel());
+					player.teleport(loc);
+					player.setGamemode(0);
 				}
 
 				p.getServer().getLevelByName(world).unload(true);
@@ -158,10 +158,10 @@ public class GameLevel {
 
 	public String toString(){
 		String spawnsString = "";
-		for(int i = 0; i<spawnList.size();i++) {
-			spawnsString += ""+spawnList.get(i).x+":"+spawnList.get(i).y+":"+spawnList.get(i).z;
+		for (Spawn spawn : spawnList) {
+			spawnsString += "" + spawn.x + ":" + spawn.y + ":" + spawn.z;
 			spawnsString += "\n";
-			
+
 		}
 		return(id+"\n"+world+"\n"+maxPlayers+"\n"+spawnsString);
 	}
@@ -195,10 +195,7 @@ public class GameLevel {
 		if (configuring) {
 			return false;
 		}
-		if (emptySpawns) {
-			return false;
-		}
-		return true;
+		return !emptySpawns;
 	}
 	
 	public static GameLevel getGameLevelByWorld(String world) {
