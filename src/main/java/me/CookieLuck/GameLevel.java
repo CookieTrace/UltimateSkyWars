@@ -26,7 +26,7 @@ public class GameLevel {
 	public boolean building;
 	public boolean waiting;
 	public boolean invulnerable;
-	public boolean gamestarted;
+	public boolean gameStarted;
 	public List<Player> dead;
 	public List<Player> alive;
 
@@ -43,7 +43,7 @@ public class GameLevel {
 		waiting = true;
 		invulnerable = false;
 		dead = new ArrayList<Player>();
-		gamestarted = false;
+		gameStarted = false;
 		alive = new ArrayList<Player>();
 		addToMain();
 	}
@@ -90,7 +90,7 @@ public class GameLevel {
 
 	public void win(Player p){
 
-		gamestarted = false;
+		gameStarted = false;
 		waiting = true;
 		building = true;
 		for (Player player : alive) {
