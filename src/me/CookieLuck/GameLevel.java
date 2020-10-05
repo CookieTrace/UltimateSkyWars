@@ -91,8 +91,7 @@ public class GameLevel {
 	}
 
 	public void win(Player p){
-		alive = new ArrayList<Player>();
-		dead = new ArrayList<Player>();
+
 		gamestarted = false;
 		waiting = true;
 		building = true;
@@ -103,7 +102,8 @@ public class GameLevel {
 		for(int i = 0; i<dead.size();i++){
 			dead.get(i).sendTitle("",TextFormat.DARK_AQUA+""+TextFormat.BOLD+""+p.getName()+" WON THE GAME!");
 		}
-
+		alive = new ArrayList<Player>();
+		dead = new ArrayList<Player>();
 		new Thread( new Runnable() {
 			public void run()  {
 				try  { Thread.sleep( 5000 ); }
