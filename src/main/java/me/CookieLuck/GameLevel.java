@@ -170,7 +170,7 @@ public class GameLevel {
 		Location loc = new Location(p.getServer().getLevelByName(this.world).getSpawnLocation().x,p.getServer().getLevelByName(this.world).getSpawnLocation().y,p.getServer().getLevelByName(this.world).getSpawnLocation().z,p.getServer().getLevelByName(this.world));
 		p.teleport(loc);
 		alive.add(p);
-		p.setGamemode(2);
+
 	}
 	public void joinPlayer(Player p){
 		if(building){
