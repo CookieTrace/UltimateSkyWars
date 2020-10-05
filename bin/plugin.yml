@@ -2,7 +2,7 @@ name: UltimateSkyWars
 version: 1.0
 main: me.CookieLuck.Main
 author: CookieLuck
-api-version: ["1.0.11"]
+api: ["1.0.9"]
 
 commands:
   usw:

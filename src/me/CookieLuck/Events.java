@@ -79,10 +79,12 @@ public class Events implements Listener {
 			fw = (FormWindowUSWS) e.getWindow();
 			if(fw.id == 0){
 				ElementInput ei = new ElementInput("","7");
+				if(fw.getResponse() != null){
+					FormWindowUSW fww = new FormWindowUSW(fw.getResponse().getClickedButton().getText(),"Players");
+					fww.addElement(ei);
+					e.getPlayer().showFormWindow(fww);
+				}
 
-				FormWindowUSW fww = new FormWindowUSW(fw.getResponse().getClickedButton().getText(),"Players");
-				fww.addElement(ei);
-				e.getPlayer().showFormWindow(fww);
 			}
 
 			if(fw.id == 3){
