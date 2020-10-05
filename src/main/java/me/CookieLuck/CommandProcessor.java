@@ -31,6 +31,10 @@ public class CommandProcessor {
 			return true;
 		}
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("join")) {
+			if	(!p.hasPermission("usw.join")){
+				sendNoPerm(p);
+				return true;
+			}
 			FormWindowUSWS fw = new FormWindowUSWS(3,"Select game","Select a game");
 
 			for(int i = 0; i<Main.gameLevels.size();i++){
@@ -43,33 +47,33 @@ public class CommandProcessor {
 
 		}
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("leave")) {
-
+			if (!p.hasPermission("usw.leave")){
+				sendNoPerm(p);
+				return true;
+			}
 			p.getInventory().clearAll();
 			GameLevel.getGameLevelByWorld(p.getLevel().getName()).leave(p);
 
 		}
 
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("saveWorlds")) {
-			if(p.isOp()){
-				plugin.saveGameLevels();
-			}else{
-				return false;
+			if (!p.hasPermission("usw.saveworlds")){
+				sendNoPerm(p);
+				return true;
 			}
-
+			plugin.saveGameLevels();
 		}
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("create")) {
-			if(!(p.getPlayer().isOp())){
-				return false;
+			if(!p.hasPermission("usw.create")){
+				sendNoPerm(p);
+				return true;
 			}
 			FormWindowUSWS fw = new FormWindowUSWS(0, "Create GameLevel","SELECT A MAP");
 			for (Integer integer : p.getServer().getLevels().keySet()) {
 				int id = (int) integer;
 				if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
-					if(plugin.getServer().getDefaultLevel() != plugin.getServer().getLevel(id)){
-						ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
-						fw.addButton(eb);
-					}
-
+					ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
+					fw.addButton(eb);
 				}
 
 
@@ -81,12 +85,14 @@ public class CommandProcessor {
 
 
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("setspawns")) {
-			if(!(p.isOp())){
-				return false;
+			if(!p.hasPermission("usw.setspawns")){
+				sendNoPerm(p);
+				return true;
 			}
 			p.getInventory().clearAll();
-			if (!p.isOp()) {
-				return (false);
+			if(!p.hasPermission("usw.setspawns")){
+				sendNoPerm(p);
+				return true;
 			}
 			gl.configuring = true;
 			gl.waiting = false;
@@ -94,6 +100,10 @@ public class CommandProcessor {
 		}
 
 		return true;
+	}
+
+	private static void sendNoPerm(Player p) {
+		p.sendMessage("You do not have permission to do this command");
 	}
 
 	private static void sendHelp(Player player) {
