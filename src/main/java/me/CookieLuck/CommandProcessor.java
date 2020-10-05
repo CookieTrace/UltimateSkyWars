@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.form.element.ElementButton;
+import cn.nukkit.utils.TextFormat;
 
 import java.io.IOException;
 
@@ -21,11 +22,13 @@ public class CommandProcessor {
 		}
 		GameLevel gl = GameLevel.getGameLevelByWorld(p.getLevel().getName());
 
-		if	(c.getName().equalsIgnoreCase("usw")){
+		if	(c.getName().equalsIgnoreCase("usw") && args.length == 0){
 			sendHelp(p);
+			return true;
 		}
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("help")){
 			sendHelp(p);
+			return true;
 		}
 		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("join")) {
 			FormWindowUSWS fw = new FormWindowUSWS(3,"Select game","Select a game");
@@ -46,7 +49,7 @@ public class CommandProcessor {
 
 		}
 
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("saveGames")) {
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("saveWorlds")) {
 			if(p.isOp()){
 				plugin.saveGameLevels();
 			}else{
@@ -91,6 +94,7 @@ public class CommandProcessor {
 	}
 
 	private static void sendHelp(Player player) {
+		player.sendMessage("Commands:\n"+ TextFormat.AQUA+"/usw create\n/usw join\n/usw leave\n/usw saveWorlds");
 		//TODO: Make a help message to send to the player
 		//message gets send when player does /usw or /usw help
 	}

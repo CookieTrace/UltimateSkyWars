@@ -25,14 +25,15 @@ import org.iq80.leveldb.util.FileUtils;
 public class Main extends PluginBase {
 
 	static List<GameLevel> gameLevels = new LinkedList<GameLevel>();
+	String worldsDir;
 	Level lobby;
 
 	public void onEnable() {
-		
-		
 
-		loadGameLevels();
+
 		loadConfig();
+		loadGameLevels();
+
 
 		this.getLogger().info("Ultimate SkyWars Enabled");
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
@@ -103,7 +104,7 @@ public class Main extends PluginBase {
 			FileWriter fw = new FileWriter(this.getDataFolder()+"/Config.usw");
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.flush();
-			bw.write(world);
+			bw.write(getServer().getDefaultLevel().getName()+"\n"+this.getDataFolder()+"../../"+"../"+"/worlds");
 			bw.close();
 			fw.close();
 		} catch (IOException e) {
@@ -150,10 +151,14 @@ public class Main extends PluginBase {
 		entity.spawnToAll();
 	}
 	void saveBackups(){
-		File levels = new File(this.getDataFolder()+"../"+"../"+"../"+"/worlds");
+		File levels = new File(worldsDir);
 		File destiny = new File(this.getDataFolder() + "/LevelBackups");
 		if(!destiny.exists()) {
 			destiny.mkdir();
+		}
+		if(!levels.exists()){
+			getServer().getLogger().error("DIRECTORY FOR WORLDS NOT VALID");
+			return;
 		}
 		FileUtils.copyDirectoryContents(levels,destiny);
 	}
@@ -169,6 +174,7 @@ public class Main extends PluginBase {
 			BufferedReader br = new BufferedReader(fr);
 
 			lobby = getServer().getLevelByName(br.readLine());
+			worldsDir = br.readLine();
 			fr.close();
 			br.close();
 		} catch (FileNotFoundException e) {

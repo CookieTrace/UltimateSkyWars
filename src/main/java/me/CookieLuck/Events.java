@@ -74,7 +74,7 @@ public class Events implements Listener {
 			}
 
 			if(fw.id == 3){
-				if(fw.getResponse().getClickedButton().getText() != null){
+				if(fw.getResponse() != null){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText()).joinPlayer(p);
 				}
 
@@ -85,7 +85,7 @@ public class Events implements Listener {
 			FormWindowUSW fw;
 			fw = (FormWindowUSW) e.getWindow();
 				GameLevel gl = new GameLevel(Main.gameLevels.size(), fw.related,Integer.parseInt(fw.getResponse().getInputResponse(0)),main);
-				gl.joinPlayer(p);
+				gl.joinForcePlayer(p);
 		}
 
 		
