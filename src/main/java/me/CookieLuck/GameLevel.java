@@ -163,7 +163,15 @@ public class GameLevel {
 		}
 		return(id+"\n"+world+"\n"+maxPlayers+"\n"+spawnsString);
 	}
-
+	public void joinForcePlayer(Player p){
+		if(!plugin.getServer().isLevelLoaded(world)){
+			plugin.getServer().loadLevel(world);
+		}
+		Location loc = new Location(p.getServer().getLevelByName(this.world).getSpawnLocation().x,p.getServer().getLevelByName(this.world).getSpawnLocation().y,p.getServer().getLevelByName(this.world).getSpawnLocation().z,p.getServer().getLevelByName(this.world));
+		p.teleport(loc);
+		alive.add(p);
+		p.setGamemode(2);
+	}
 	public void joinPlayer(Player p){
 		if(building){
 			p.sendMessage(TextFormat.RED + "MAP NOT BUILDED YET, WAIT");

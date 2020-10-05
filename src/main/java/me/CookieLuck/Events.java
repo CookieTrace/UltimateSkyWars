@@ -82,7 +82,7 @@ public class Events implements Listener {
 			FormWindowUSW fw;
 			fw = (FormWindowUSW) e.getWindow();
 				GameLevel gl = new GameLevel(Main.gameLevels.size(), fw.related,Integer.parseInt(fw.getResponse().getInputResponse(0)),main);
-				gl.joinPlayer(p);
+				gl.joinForcePlayer(p);
 		}
 
 		
