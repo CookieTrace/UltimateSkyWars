@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.nukkit.Player;
-import cn.nukkit.block.Block;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
