@@ -1,0 +1,10 @@
+name: UltimateSkyWars
+version: 1.0
+main: me.CookieLuck.Main
+author: CookieLuck
+api-version: ["1.0.11"]
+
+commands:
+  usw:
+    description: How to use the command.
+    usage: /usw <args>
