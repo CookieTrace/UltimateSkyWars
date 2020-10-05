@@ -1,54 +1,52 @@
 package me.CookieLuck;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.entity.mob.EntityZombie;
-import cn.nukkit.form.element.Element;
 import cn.nukkit.form.element.ElementButton;
-import cn.nukkit.form.window.FormWindow;
-import cn.nukkit.form.window.FormWindowSimple;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Location;
-import cn.nukkit.level.Sound;
-import cn.nukkit.utils.TextFormat;
+
+import java.io.IOException;
 
 public class CommandProcessor {
 
 	public static boolean processCommand(CommandSender s, Command c, String[] args, Main plugin) throws IOException {
-		GameLevel gl = GameLevel.getGameLevelByWorld(((Player) s).getPlayer().getLevel().getName());
 
-		if (c.getName().equals("usw") && args[0].equals("join")) {
-			FormWindowUSWS fw = new FormWindowUSWS(3,"Slect game","Slect a game");
+		if (!(s instanceof Player)){
+			s.sendMessage("Only use these commands in game");
+			//TODO: add nice msg to this with color
+		}
+		Player p = null;
+		if (s instanceof Player) {
+			p = (Player) s;
+		}
+		GameLevel gl = GameLevel.getGameLevelByWorld(p.getLevel().getName());
+
+		if	(c.getName().equalsIgnoreCase("usw")){
+			sendHelp(p);
+		}
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("help")){
+			sendHelp(p);
+		}
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("join")) {
+			FormWindowUSWS fw = new FormWindowUSWS(3,"Select game","Select a game");
 
 			for(int i = 0; i<Main.gameLevels.size();i++){
 				ElementButton btn = new ElementButton(Main.gameLevels.get(i).world);
 				fw.addButton(btn);
 			}
-				Player p = ((Player) s).getPlayer();
+
 			p.showFormWindow(fw);
 			p.getInventory().clearAll();
 
 		}
-		if (c.getName().equals("usw") && args[0].equals("leave")) {
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("leave")) {
 
-			Player p = ((Player) s).getPlayer();
 			p.getInventory().clearAll();
 			GameLevel.getGameLevelByWorld(p.getLevel().getName()).leave(p);
 
 		}
 
-		if (c.getName().equals("usw") && args[0].equals("saveGames")) {
-			Player p = ((Player) s).getPlayer();
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("saveGames")) {
 			if(p.isOp()){
 				plugin.saveGameLevels();
 			}else{
@@ -56,16 +54,14 @@ public class CommandProcessor {
 			}
 
 		}
-		if (c.getName().equals("usw") && args[0].equals("create")) {
-			if(!((Player) s).getPlayer().isOp()){
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("create")) {
+			if(!(p.getPlayer().isOp())){
 				return false;
 			}
-			Player p = ((Player) s).getPlayer();
 			FormWindowUSWS fw = new FormWindowUSWS(0, "Create GameLevel","SELECT A MAP");
-			Iterator it = p.getServer().getLevels().keySet().iterator();
-			while(it.hasNext()){
-				int id = (int) it.next();
-				if(GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null && plugin.getServer().getDefaultLevel() != plugin.getServer().getLevel(id)){
+			for (Integer integer : p.getServer().getLevels().keySet()) {
+				int id = (int) integer;
+				if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
 					ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
 					fw.addButton(eb);
 				}
@@ -74,20 +70,17 @@ public class CommandProcessor {
 			}
 
 			p.showFormWindow(fw);
-			
+
 		}
-		
-		
-		if (c.getName().equals("usw") && args[0].equals("setspawns")) {
-			if(!((Player) s).getPlayer().isOp()){
+
+
+		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("setspawns")) {
+			if(!(p.isOp())){
 				return false;
 			}
-			if (s instanceof Player) {
-				Player p = ((Player) s).getPlayer();
-				p.getInventory().clearAll();
-				if (!p.isOp()) {
-					return (false);
-				}
+			p.getInventory().clearAll();
+			if (!p.isOp()) {
+				return (false);
 			}
 			gl.configuring = true;
 			gl.waiting = false;
@@ -95,6 +88,11 @@ public class CommandProcessor {
 		}
 
 		return true;
+	}
+
+	private static void sendHelp(Player player) {
+		//TODO: Make a help message to send to the player
+		//message gets send when player does /usw or /usw help
 	}
 
 }
