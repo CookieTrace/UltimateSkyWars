@@ -173,6 +173,12 @@ public class GameLevel {
 		}else if(!plugin.getServer().isLevelLoaded(world)){
 			plugin.getServer().loadLevel(world);
 		}
+
+		if(GameLevel.getGameLevelByWorld(((p.getLevel().getName()))) != null){
+			p.sendMessage(TextFormat.RED+""+TextFormat.BOLD+"ALREADY IN GAME");
+			return;
+		}
+
 		if(spawnList.size() == maxPlayers){
 
 			Location loc = new Location(this.spawnList.get(this.alive.size()).x,this.spawnList.get(this.alive.size()).y,this.spawnList.get(this.alive.size()).z, p.getServer().getLevelByName(this.world));

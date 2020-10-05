@@ -59,7 +59,6 @@ public class Main extends PluginBase {
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();br.readLine();br.readLine();
 			String line;
-			
 			while ((line = br.readLine()) != null) {
 				String[] coordinates = line.split(":");
 				spawns.add(new Spawn(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]),
