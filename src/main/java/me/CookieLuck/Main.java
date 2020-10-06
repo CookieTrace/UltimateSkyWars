@@ -94,7 +94,7 @@ public class Main extends PluginBase {
 		return null;
 	}
 
-	public void saveLobby(String world){
+	public void saveLobby(){
 		try {
 			FileWriter fw = new FileWriter(this.getDataFolder()+"/Config.usw");
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -152,7 +152,7 @@ public class Main extends PluginBase {
 			destiny.mkdir();
 		}
 		if(!levels.exists()){
-			getServer().getLogger().error("DIRECTORY FOR WORLDS NOT VALID");
+			getServer().getLogger().error("[UltimateSkyWars] WORLDS FOLDER NOT FOUND, CHANGE IT ON Config.usw");
 			return;
 		}
 		FileUtils.copyDirectoryContents(levels,destiny);
@@ -162,7 +162,7 @@ public class Main extends PluginBase {
 
 		File f = new File(this.getDataFolder()+"/Config.usw");
 		if(!f.exists()) {
-			saveLobby(getServer().getDefaultLevel().getName());
+			saveLobby();
 		}
 		try {
 			FileReader fr = new FileReader(f);
