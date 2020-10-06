@@ -31,20 +31,19 @@ public class GameLevel {
 	public List<Player> alive;
 
 	GameLevel(int id, String world, int maxPlayers, Main plugin){
-
-		building = false;
+		this.building = false;
 		this.plugin = plugin;
 		this.id = id;
-		this.spawnList = new ArrayList<Spawn>();
+		this.spawnList = new ArrayList<>();
 		this.world = world;
-		emptySpawns = true;
-		configuring = false;
+		this.emptySpawns = true;
+		this.configuring = false;
 		this.maxPlayers = maxPlayers;
-		waiting = true;
-		invulnerable = false;
-		dead = new ArrayList<Player>();
-		gameStarted = false;
-		alive = new ArrayList<Player>();
+		this.waiting = true;
+		this.invulnerable = false;
+		this.dead = new ArrayList<>();
+		this.gameStarted = false;
+		this.alive = new ArrayList<>();
 		addToMain();
 	}
 
@@ -71,9 +70,9 @@ public class GameLevel {
 
 		Iterator<Integer> it = map.keySet().iterator();
 
-		int itemID = 0;
+		int itemID;
 		while (it.hasNext()) {
-			itemID = (int) it.next();
+			itemID = it.next();
 			Item item = map.get(itemID);
 			p.dropItem(item);
 		}
@@ -104,8 +103,9 @@ public class GameLevel {
 		dead = new ArrayList<>();
 		new Thread( new Runnable() {
 			public void run()  {
-				try  { Thread.sleep( 5000 ); }
-				catch (InterruptedException ie)  {}
+				try  {
+					Thread.sleep( 5000 );
+				} catch (InterruptedException ignored) {}
 				for(int i = 0; i<alive.size();i++){
 					Location loc = new Location(p.getServer().getDefaultLevel().getSpawnLocation().getX(),p.getServer().getDefaultLevel().getSpawnLocation().getY(),p.getServer().getDefaultLevel().getSpawnLocation().getZ(), p.getServer().getDefaultLevel());
 					alive.get(i).teleport(loc);
@@ -129,7 +129,9 @@ public class GameLevel {
 		} ).start();
 		new Thread( new Runnable() {
 			public void run()  {
-				try  { Thread.sleep( 30000 );} catch (InterruptedException e) {
+				try  {
+					Thread.sleep( 30000 );
+				} catch (InterruptedException ignored) {
 
 				}
 
@@ -155,13 +157,14 @@ public class GameLevel {
 	}
 
 	public String toString(){
-		String spawnsString = "";
-		for (Spawn spawn : spawnList) {
-			spawnsString += "" + spawn.x + ":" + spawn.y + ":" + spawn.z;
-			spawnsString += "\n";
 
+		StringBuilder spawnsString = new StringBuilder(id+"\n"+world+"\n"+maxPlayers+"\n");
+		for (Spawn spawn : spawnList) {
+			spawnsString.append(spawn.x)
+					.append(":").append(spawn.y)
+					.append(":").append(spawn.z).append("\n");
 		}
-		return(id+"\n"+world+"\n"+maxPlayers+"\n"+spawnsString);
+		return spawnsString.toString();
 	}
 	public void joinForcePlayer(Player p){
 		if(!plugin.getServer().isLevelLoaded(world)){
@@ -205,13 +208,14 @@ public class GameLevel {
 	}
 	
 	public static GameLevel getGameLevelByWorld(String world) {
-		for(int i = 0; i<Main.gameLevels.size();i++) {
-			if(Main.gameLevels.get(i).world.equals(world)) {
-				return Main.gameLevels.get(i);
+		for (GameLevel gameLevel : Main.gameLevels) {
+			if(gameLevel.world.equals(world)) {
+				return gameLevel;
 			}
 		}
 		return null;
 	}
+
 	public static GameLevel getGameLevelById(int id) {
 		return Main.gameLevels.get(id);
 	}
