@@ -8,3 +8,19 @@ commands:
   usw:
     description: How to use the command.
     usage: /usw <args>
+permissions:
+  usw.join:
+     descrption: Lets you join the game
+     default: true
+  usw.leave:
+    descrption: Lets you leave the game
+    default: true
+  usw.saveworlds:
+    descrption: Lets you save worlds
+    default: op
+  usw.create:
+    descrption: Lets you create games
+    default: op
+  usw.setspawns:
+    descrption: Lets you set spawns
+    default: op

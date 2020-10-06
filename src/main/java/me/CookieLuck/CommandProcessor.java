@@ -17,7 +17,7 @@ public class CommandProcessor {
 					sendHelp(p);
 					return true;
 				}
-				switch (c.getName().toLowerCase()) {
+				switch (args[0]) {
 					case "join":
 						if (!p.hasPermission("usw.join")) {
 							sendNoPerm(p);
@@ -59,8 +59,11 @@ public class CommandProcessor {
 						for (Integer integer : p.getServer().getLevels().keySet()) {
 							int id = integer;
 							if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
-								ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
-								fw2.addButton(eb);
+								if(plugin.getServer().getDefaultLevel() != plugin.getServer().getLevel(id)){
+									ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
+									fw2.addButton(eb);
+								}
+
 							}
 						}
 						p.showFormWindow(fw2);

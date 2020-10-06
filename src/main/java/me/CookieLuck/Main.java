@@ -84,10 +84,11 @@ public class Main extends PluginBase {
 	String procesarMundo(int id) {
 		try {
 			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+".uws");
-			@SuppressWarnings("resource")
+			File f = new File(ClassLoader.getSystemResource("Languaje.yml").getFile());
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();return(br.readLine());
-			
+
+
 		}catch(Exception e) {
 			
 		}
