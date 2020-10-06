@@ -202,7 +202,7 @@ public class Main extends PluginBase {
 		FileWriter fw;
 		for (GameLevel gameLevel : gameLevels) {
 			try {
-				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gameLevel.id + ".uws");
+				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gameLevel.getId() + ".uws");
 				BufferedWriter bw = new BufferedWriter(fw);
 				fw.flush();
 				bw.write(gameLevel.toString());

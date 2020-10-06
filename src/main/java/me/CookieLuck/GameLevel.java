@@ -16,19 +16,21 @@ import org.iq80.leveldb.util.FileUtils;
 
 public class GameLevel {
 
-	int id;
-	Main plugin;
-	List<Spawn> spawnList;
-	String world;
-	public boolean configuring;
-	public int maxPlayers;
-	public boolean emptySpawns;
-	public boolean building;
-	public boolean waiting;
-	public boolean invulnerable;
-	public boolean gameStarted;
-	public List<Player> dead;
-	public List<Player> alive;
+	private int id;
+	private Main plugin;
+	private List<Spawn> spawnList;
+	private String world;
+	private boolean configuring;
+	private int maxPlayers;
+	private boolean emptySpawns;
+	private boolean building;
+	private boolean waiting;
+	private boolean invulnerable;
+	private boolean gameStarted;
+	private List<Player> dead;
+	private List<Player> alive;
+
+	//CONSTRUCTOR AND MAIN COMUNICATION
 
 	GameLevel(int id, String world, int maxPlayers, Main plugin){
 		this.building = false;
@@ -47,13 +49,6 @@ public class GameLevel {
 		addToMain();
 	}
 
-	private void addToMain(){
-		Main.gameLevels.add(this);
-		plugin.saveGameLevels();
-		new GameThread(plugin, this.world).runTaskTimer(plugin, 0, 1);
-	}
-
-	
 	GameLevel(int id, List<Spawn> spawns,String world, int maxPlayers, Main plugin){
 
 		this(id,world,maxPlayers,plugin);
@@ -62,6 +57,119 @@ public class GameLevel {
 
 	}
 
+	private void addToMain(){
+		Main.gameLevels.add(this);
+		plugin.saveGameLevels();
+		new GameThread(plugin, this.world).runTaskTimer(plugin, 0, 1);
+	}
+
+	//GETTERS AND SETTERS
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Main getPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(Main plugin) {
+		this.plugin = plugin;
+	}
+
+	public List<Spawn> getSpawnList() {
+		return spawnList;
+	}
+
+	public void setSpawnList(List<Spawn> spawnList) {
+		this.spawnList = spawnList;
+	}
+
+	public String getWorld() {
+		return world;
+	}
+
+	public void setWorld(String world) {
+		this.world = world;
+	}
+
+	public boolean isConfiguring() {
+		return configuring;
+	}
+
+	public void setConfiguring(boolean configuring) {
+		this.configuring = configuring;
+	}
+
+	public int getMaxPlayers() {
+		return maxPlayers;
+	}
+
+	public void setMaxPlayers(int maxPlayers) {
+		this.maxPlayers = maxPlayers;
+	}
+
+	public boolean isEmptySpawns() {
+		return emptySpawns;
+	}
+
+	public void setEmptySpawns(boolean emptySpawns) {
+		this.emptySpawns = emptySpawns;
+	}
+
+	public boolean isBuilding() {
+		return building;
+	}
+
+	public void setBuilding(boolean building) {
+		this.building = building;
+	}
+
+	public boolean isWaiting() {
+		return waiting;
+	}
+
+	public void setWaiting(boolean waiting) {
+		this.waiting = waiting;
+	}
+
+	public boolean isInvulnerable() {
+		return invulnerable;
+	}
+
+	public void setInvulnerable(boolean invulnerable) {
+		this.invulnerable = invulnerable;
+	}
+
+	public boolean isGameStarted() {
+		return gameStarted;
+	}
+
+	public void setGameStarted(boolean gameStarted) {
+		this.gameStarted = gameStarted;
+	}
+
+	public List<Player> getDead() {
+		return dead;
+	}
+
+	public void setDead(List<Player> dead) {
+		this.dead = dead;
+	}
+
+	public List<Player> getAlive() {
+		return alive;
+	}
+
+	public void setAlive(List<Player> alive) {
+		this.alive = alive;
+	}
+
+	//METHODS
 
 	public void die(Player p){
 		p.setGamemode(3);

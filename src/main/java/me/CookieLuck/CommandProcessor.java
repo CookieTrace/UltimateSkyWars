@@ -25,7 +25,7 @@ public class CommandProcessor {
 						}
 						FormWindowUSWS fw = new FormWindowUSWS(3, "Select game", "Select a game");
 						for (GameLevel gameLevel : Main.gameLevels) {
-							fw.addButton(new ElementButton(gameLevel.world));
+							fw.addButton(new ElementButton(gameLevel.getWorld()));
 						}
 						p.showFormWindow(fw);
 						p.getInventory().clearAll();
@@ -76,8 +76,8 @@ public class CommandProcessor {
 						if (gl != null) {
 							p.getInventory().clearAll();
 							p.getUIInventory().clearAll();
-							gl.configuring = true;
-							gl.waiting = false;
+							gl.setConfiguring(true);
+							gl.setWaiting(false);
 						}else {
 							//TODO There is no game room in the location map
 						}
