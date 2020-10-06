@@ -5,8 +5,11 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.*;
+import cn.nukkit.event.player.PlayerDropItemEvent;
+import cn.nukkit.event.player.PlayerFormRespondedEvent;
+import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
@@ -61,9 +64,8 @@ public class Events implements Listener {
 			FormWindowUSWS fw;
 			fw = (FormWindowUSWS) e.getWindow();
 			if(fw.id == 0){
+				ElementInput ei = new ElementInput("","7");
 				if(fw.getResponse() != null){
-					ElementInput ei = new ElementInput("","7");
-
 					FormWindowUSW fww = new FormWindowUSW(fw.getResponse().getClickedButton().getText(),"Players");
 					fww.addElement(ei);
 					e.getPlayer().showFormWindow(fww);
@@ -75,6 +77,7 @@ public class Events implements Listener {
 				if(fw.getResponse() != null){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText()).joinPlayer(p);
 				}
+
 			}
 		}
 

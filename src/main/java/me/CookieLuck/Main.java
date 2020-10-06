@@ -201,22 +201,21 @@ public class Main extends PluginBase {
 	
 	public void saveGameLevels() {
 		FileWriter fw;
-			Iterator it = gameLevels.iterator();
-			while(it.hasNext()) {
-				try {
-					GameLevel gl = (GameLevel) it.next();
-					fw = new FileWriter(getDataFolder() + "/GameLevels/"+gl.id+".uws");
-					BufferedWriter bw = new BufferedWriter(fw);
-					fw.flush();
-					bw.write(gl.toString());
-					bw.close();
-					fw.close();
-					
-				} catch (IOException e) {
-					
-					e.printStackTrace();
-				}
+		for (GameLevel gameLevel : gameLevels) {
+			try {
+				GameLevel gl = gameLevel;
+				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gl.id + ".uws");
+				BufferedWriter bw = new BufferedWriter(fw);
+				fw.flush();
+				bw.write(gl.toString());
+				bw.close();
+				fw.close();
+
+			} catch (IOException e) {
+
+				e.printStackTrace();
 			}
+		}
 			saveBackups();
 	}
 

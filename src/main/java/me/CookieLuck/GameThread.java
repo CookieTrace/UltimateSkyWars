@@ -20,7 +20,7 @@ public class GameThread extends NukkitRunnable {
 	int doubleTick;
 	GameLevel gl;
 	String map;
-	int tickssincestart;
+	int ticksSinceStart;
 
 	public GameThread(Main plugin, String map) {
 		this.plugin = plugin;
@@ -32,11 +32,11 @@ public class GameThread extends NukkitRunnable {
 	public void run() {
 
 		if(gl.waiting){
-			tickssincestart = 0;
+			ticksSinceStart = 0;
 		}
 
 		if(!gl.waiting && !gl.configuring){
-			tickssincestart ++;
+			ticksSinceStart++;
 		}
 
 		if (gl.emptySpawns) {
@@ -101,14 +101,14 @@ public class GameThread extends NukkitRunnable {
 			List<Player> psmuertos = gl.dead;
 
 
-			for (int i = 0; i<ps.size(); i++) {
-				ps.get(i).sendActionBar(TextFormat.RED+""+TextFormat.BOLD+""+gl.alive.size()+" ALIVE"+" | "+gl.dead.size()+" DEADS");
-				ps.get(i).setGamemode(0);
+			for (Player player : ps) {
+				player.sendActionBar(TextFormat.RED + "" + TextFormat.BOLD + "" + gl.alive.size() + " ALIVE" + " | " + gl.dead.size() + " DEADS");
+				player.setGamemode(0);
 			}
 
-			for (int i = 0; i<psmuertos.size(); i++) {
-				psmuertos.get(i).sendActionBar(TextFormat.RED+""+TextFormat.BOLD+""+gl.alive.size()+" ALIVE"+" | "+gl.dead.size()+" DEADS");
-				psmuertos.get(i).setGamemode(3);
+			for (Player psmuerto : psmuertos) {
+				psmuerto.sendActionBar(TextFormat.RED + "" + TextFormat.BOLD + "" + gl.alive.size() + " ALIVE" + " | " + gl.dead.size() + " DEADS");
+				psmuerto.setGamemode(3);
 			}
 
 			if(gl.alive.size()==1){
@@ -118,22 +118,22 @@ public class GameThread extends NukkitRunnable {
 
 			}
 
-			if (tickssincestart == 1) {
-				for (int i = 0; i<ps.size(); i++) {
-					ps.get(i).getInventory().clearAll();
-					Vector3 pos = new Vector3(ps.get(i).getX(), ps.get(i).getY()-1, ps.get(i).getZ());
-					ps.get(i).getLevel().setBlock(pos, Block.get(Block.AIR));
-					ps.get(i).sendTitle("",TextFormat.DARK_AQUA+""+TextFormat.BOLD+""+"GO!");
-					ps.get(i).getLevel().addSound(ps.get(i).getLocation(), Sound.MOB_GHAST_AFFECTIONATE_SCREAM, 1,(float)0.3);
+			if (ticksSinceStart == 1) {
+				for (Player p : ps) {
+					p.getInventory().clearAll();
+					Vector3 pos = new Vector3(p.getX(), p.getY() - 1, p.getZ());
+					p.getLevel().setBlock(pos, Block.get(Block.AIR));
+					p.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + "GO!");
+					p.getLevel().addSound(p.getLocation(), Sound.MOB_GHAST_AFFECTIONATE_SCREAM, 1, (float) 0.3);
 				}
 				gl.invulnerable = true;
 			}
 
-			if(tickssincestart == 300){
+			if(ticksSinceStart == 300){
 				gl.invulnerable = false;
-				for (int i = 0; i<ps.size(); i++) {
-					ps.get(i).getLevel().addSound(ps.get(i).getLocation(), Sound.ITEM_TRIDENT_THUNDER, 1,(float)0.7);
-					ps.get(i).sendTitle("",TextFormat.BLUE+""+TextFormat.BOLD+""+"invincibility finished");
+				for (Player p : ps) {
+					p.getLevel().addSound(p.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 1, (float) 0.7);
+					p.sendTitle("", TextFormat.BLUE + "" + TextFormat.BOLD + "" + "invincibility finished");
 				}
 			}
 		}
@@ -141,37 +141,35 @@ public class GameThread extends NukkitRunnable {
 
 	private void configurando() {
 		List<Player> players = gl.alive;
-		
-		for (int i = 0; i<players.size(); i++) {
 
-			Player p = players.get(i);
-			
+		for (Player p : players) {
+
 			if (p != null) {
-				
+
 				p.sendActionBar(TextFormat.BOLD + "" + TextFormat.DARK_GREEN + "SET SPAWN Nº: "
 						+ gl.spawnList.size() + " || " + (gl.maxPlayers - gl.spawnList.size()) + " LEFT");
 				p.setGamemode(1);
-				
+
 				if (gl.spawnList.size() != gl.maxPlayers) {
 					Item wand = new Item(280);
 					wand.setCustomName("§2WAND");
 					p.getInventory().setItem(0, wand);
 				}
-				
+
 				if (gl.spawnList.size() != 0) {
 					Item back = new Item(257);
 					back.setCustomName(TextFormat.DARK_RED + "BACK");
 					p.getInventory().setItem(8, back);
 				}
-				
+
 				if (gl.spawnList.size() == gl.maxPlayers) {
 					Item done = new Item(262);
 					done.setCustomName(TextFormat.DARK_GREEN + "DONE");
 					p.getInventory().setItem(4, done);
 				}
-				
+
 			}
-			
+
 		}
 
 		particleEffect();
@@ -181,15 +179,15 @@ public class GameThread extends NukkitRunnable {
 	private void particleEffect() {
 		for (int i = 0; i < gl.spawnList.size(); i++) {
 
+			Vector3 pos;
 			if (doubleTick <= 20) {
-				Vector3 pos = new Vector3(gl.spawnList.get(i).x + 0.5, gl.spawnList.get(i).y + (tick * 0.1),
+				pos = new Vector3(gl.spawnList.get(i).x + 0.5, gl.spawnList.get(i).y + (tick * 0.1),
 						gl.spawnList.get(i).z + 0.5);
-				plugin.getServer().getLevelByName(gl.world).addParticleEffect(pos, ParticleEffect.REDSTONE_TORCH_DUST);
 			} else {
-				Vector3 pos = new Vector3(gl.spawnList.get(i).x + 0.5,
+				pos = new Vector3(gl.spawnList.get(i).x + 0.5,
 						(gl.spawnList.get(i).y + 2) - (tick * 0.1), gl.spawnList.get(i).z + 0.5);
-				plugin.getServer().getLevelByName(gl.world).addParticleEffect(pos, ParticleEffect.REDSTONE_TORCH_DUST);
 			}
+			plugin.getServer().getLevelByName(gl.world).addParticleEffect(pos, ParticleEffect.REDSTONE_TORCH_DUST);
 
 		}
 	}
@@ -197,9 +195,8 @@ public class GameThread extends NukkitRunnable {
 	private void noConfigurado() {
 		if (gl.spawnList.size() == 0) {
 			List<Player> players = gl.alive;
-			
-			for (int i = 0; i<players.size(); i++) {
-				Player p  = players.get(i);
+
+			for (Player p : players) {
 				if (p != null) {
 					p.sendActionBar(
 							TextFormat.BOLD + "" + TextFormat.DARK_RED + "Spawns not setted, USE /usw setspawns");
