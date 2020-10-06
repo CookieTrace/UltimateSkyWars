@@ -6,99 +6,89 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.utils.TextFormat;
 
-import java.io.IOException;
-
 public class CommandProcessor {
 
-	public static boolean processCommand(CommandSender s, Command c, String[] args, Main plugin) throws IOException {
+	public static boolean processCommand(CommandSender s, Command c, String[] args, Main plugin) {
+		if (s instanceof Player) {
+			Player p = (Player) s;
+			GameLevel gl = GameLevel.getGameLevelByWorld(p.getLevel().getName());
+			if (c.getName().equalsIgnoreCase("usw")) {
+				if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
+					sendHelp(p);
+					return true;
+				}
+				switch (c.getName().toLowerCase()) {
+					case "join":
+						if (!p.hasPermission("usw.join")) {
+							sendNoPerm(p);
+							return true;
+						}
+						FormWindowUSWS fw = new FormWindowUSWS(3, "Select game", "Select a game");
+						for (GameLevel gameLevel : Main.gameLevels) {
+							fw.addButton(new ElementButton(gameLevel.world));
+						}
+						p.showFormWindow(fw);
+						p.getInventory().clearAll();
+						break;
+					case "leave":
+						if (!p.hasPermission("usw.leave")) {
+							sendNoPerm(p);
+							return true;
+						}
+						if (gl != null) {
+							p.getInventory().clearAll();
+							p.getUIInventory().clearAll();
+							gl.leave(p);
+						}else {
+							//TODO There is no game room in the location map
+						}
+						break;
+					case "saveWorlds":
+						if (!p.hasPermission("usw.saveworlds")) {
+							sendNoPerm(p);
+							return true;
+						}
+						plugin.saveGameLevels();
+						break;
+					case "create":
+						if (!p.hasPermission("usw.create")) {
+							sendNoPerm(p);
+							return true;
+						}
+						FormWindowUSWS fw2 = new FormWindowUSWS(0, "Create GameLevel", "SELECT A MAP");
+						for (Integer integer : p.getServer().getLevels().keySet()) {
+							int id = integer;
+							if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
+								ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
+								fw2.addButton(eb);
+							}
+						}
+						p.showFormWindow(fw2);
+						break;
+					case "setspawns":
+						if (!p.hasPermission("usw.setspawns")) {
+							sendNoPerm(p);
+							return true;
+						}
+						if (gl != null) {
+							p.getInventory().clearAll();
+							p.getUIInventory().clearAll();
+							gl.configuring = true;
+							gl.waiting = false;
+						}else {
+							//TODO There is no game room in the location map
+						}
+						break;
+					default:
+						sendHelp(p);
+						break;
 
-		if (!(s instanceof Player)){
+				}
+			}
+		}else {
 			s.sendMessage("Only use these commands in game");
 			//TODO: add nice msg to this with color
 		}
-		Player p = null;
-		if (s instanceof Player) {
-			p = (Player) s;
-		}
-		GameLevel gl = GameLevel.getGameLevelByWorld(p.getLevel().getName());
-
-		if	(c.getName().equalsIgnoreCase("usw") && args.length == 0){
-			sendHelp(p);
-			return true;
-		}
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("help")){
-			sendHelp(p);
-			return true;
-		}
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("join")) {
-			if	(!p.hasPermission("usw.join")){
-				sendNoPerm(p);
-				return true;
-			}
-			FormWindowUSWS fw = new FormWindowUSWS(3,"Select game","Select a game");
-
-			for(int i = 0; i<Main.gameLevels.size();i++){
-				ElementButton btn = new ElementButton(Main.gameLevels.get(i).world);
-				fw.addButton(btn);
-			}
-
-			p.showFormWindow(fw);
-			p.getInventory().clearAll();
-
-		}
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("leave")) {
-			if (!p.hasPermission("usw.leave")){
-				sendNoPerm(p);
-				return true;
-			}
-			p.getInventory().clearAll();
-			GameLevel.getGameLevelByWorld(p.getLevel().getName()).leave(p);
-
-		}
-
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("saveWorlds")) {
-			if (!p.hasPermission("usw.saveworlds")){
-				sendNoPerm(p);
-				return true;
-			}
-			plugin.saveGameLevels();
-		}
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("create")) {
-			if(!p.hasPermission("usw.create")){
-				sendNoPerm(p);
-				return true;
-			}
-			FormWindowUSWS fw = new FormWindowUSWS(0, "Create GameLevel","SELECT A MAP");
-			for (Integer integer : p.getServer().getLevels().keySet()) {
-				int id = (int) integer;
-				if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
-					ElementButton eb = new ElementButton(p.getServer().getLevels().get(id).getName());
-					fw.addButton(eb);
-				}
-
-
-			}
-
-			p.showFormWindow(fw);
-
-		}
-
-
-		if (c.getName().equalsIgnoreCase("usw") && args[0].equalsIgnoreCase("setspawns")) {
-			if(!p.hasPermission("usw.setspawns")){
-				sendNoPerm(p);
-				return true;
-			}
-			p.getInventory().clearAll();
-			if(!p.hasPermission("usw.setspawns")){
-				sendNoPerm(p);
-				return true;
-			}
-			gl.configuring = true;
-			gl.waiting = false;
-
-		}
-
 		return true;
 	}
 

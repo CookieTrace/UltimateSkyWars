@@ -24,7 +24,7 @@ import org.iq80.leveldb.util.FileUtils;
 
 public class Main extends PluginBase {
 
-	static List<GameLevel> gameLevels = new LinkedList<GameLevel>();
+	static List<GameLevel> gameLevels = new LinkedList<>();
 	String worldsDir;
 	Level lobby;
 
@@ -42,12 +42,7 @@ public class Main extends PluginBase {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		try {
-			return CommandProcessor.processCommand(sender, command, args, this);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
+		return CommandProcessor.processCommand(sender, command, args, this);
 	}
 	
 	List<Spawn> procesarSpawns(int id) {
@@ -107,7 +102,7 @@ public class Main extends PluginBase {
 			bw.write(getServer().getDefaultLevel().getName()+"\n"+this.getDataFolder()+"../../"+"../"+"/worlds");
 			bw.close();
 			fw.close();
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 		}
 	}
 
@@ -177,9 +172,8 @@ public class Main extends PluginBase {
 			worldsDir = br.readLine();
 			fr.close();
 			br.close();
-		} catch (FileNotFoundException e) {
+		} catch (Exception ignored) {
 
-		} catch (IOException e) {
 		}
 
 	}
@@ -203,11 +197,10 @@ public class Main extends PluginBase {
 		FileWriter fw;
 		for (GameLevel gameLevel : gameLevels) {
 			try {
-				GameLevel gl = gameLevel;
-				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gl.id + ".uws");
+				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gameLevel.id + ".uws");
 				BufferedWriter bw = new BufferedWriter(fw);
 				fw.flush();
-				bw.write(gl.toString());
+				bw.write(gameLevel.toString());
 				bw.close();
 				fw.close();
 
