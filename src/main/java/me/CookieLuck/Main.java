@@ -30,7 +30,6 @@ public class Main extends PluginBase {
 
 	public void onEnable() {
 
-
 		loadConfig();
 		loadGameLevels();
 
@@ -84,7 +83,6 @@ public class Main extends PluginBase {
 	String procesarMundo(int id) {
 		try {
 			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+".uws");
-			File f = new File(ClassLoader.getSystemResource("Languaje.yml").getFile());
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();return(br.readLine());
 
@@ -96,6 +94,10 @@ public class Main extends PluginBase {
 	}
 
 	public void saveLobby(){
+		File f = new File(getDataFolder()+"/");
+		if(!f.exists()){
+			f.mkdir();
+		}
 		try {
 			FileWriter fw = new FileWriter(this.getDataFolder()+"/Config.usw");
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -177,6 +179,7 @@ public class Main extends PluginBase {
 
 		}
 
+
 	}
 
 	void loadGameLevels(){
@@ -192,6 +195,7 @@ public class Main extends PluginBase {
 				GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
 				new GameThread(this, procesarMundo(i)).runTaskTimer(this, 0, 1);
 			}
+			saveBackups();
 	}
 	
 	public void saveGameLevels() {
