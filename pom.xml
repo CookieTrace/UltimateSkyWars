@@ -30,6 +30,20 @@
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>de.theamychan.scoreboard</groupId>
+            <artifactId>ScoreboardAPI</artifactId>
+            <version>1.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ScoreboardAPI-1.3.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>gt.creeperface.nukkit.scoreboardapi</groupId>
+            <artifactId>ScoreboardAPI</artifactId>
+            <version>1.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ScoreboardAPI-1.4(creeperface).jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
@@ -46,6 +60,16 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
