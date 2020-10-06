@@ -47,7 +47,7 @@ public class Main extends PluginBase {
 	List<Spawn> procesarSpawns(int id) {
 		List<Spawn> spawns = new ArrayList<>();
 		try {
-			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+".uws");
+			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+"/Config.uws");
 			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();br.readLine();br.readLine();
@@ -69,7 +69,7 @@ public class Main extends PluginBase {
 
 	int getMaxPlayers(int id){
 		try {
-			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+".uws");
+			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+"/Config.uws");
 			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();br.readLine();return(Integer.parseInt(br.readLine()));
@@ -82,7 +82,7 @@ public class Main extends PluginBase {
 
 	String procesarMundo(int id) {
 		try {
-			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+".uws");
+			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+"/Config.uws");
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();return(br.readLine());
 
@@ -192,6 +192,10 @@ public class Main extends PluginBase {
 				f.mkdir();
 			}
 			for(int i = 0; i<f.listFiles().length; i++) {
+				f = new File(this.getDataFolder() + "/GameLevels/"+i);
+				if(!f.exists()) {
+					f.mkdir();
+				}
 				GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
 				new GameThread(this, procesarMundo(i)).runTaskTimer(this, 0, 1);
 			}
@@ -202,7 +206,11 @@ public class Main extends PluginBase {
 		FileWriter fw;
 		for (GameLevel gameLevel : gameLevels) {
 			try {
-				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gameLevel.getId() + ".uws");
+				File f = new File(this.getDataFolder() + "/GameLevels/"+gameLevel.getId());
+				if(!f.exists()) {
+					f.mkdir();
+				}
+				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gameLevel.getId() + "/Config.uws");
 				BufferedWriter bw = new BufferedWriter(fw);
 				fw.flush();
 				bw.write(gameLevel.toString());

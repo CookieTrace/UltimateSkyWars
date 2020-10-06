@@ -12,6 +12,8 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.NukkitRunnable;
 import cn.nukkit.utils.DyeColor;
 import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.lib.scoreboard.ltname.Scoreboard;
+import me.CookieLuck.lib.scoreboard.ltname.ScoreboardData;
 
 public class GameThread extends NukkitRunnable {
 	Main plugin;
@@ -88,7 +90,7 @@ public class GameThread extends NukkitRunnable {
 				Player p  = gl.getAlive().get(i);
 				p.sendActionBar(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS "
 						+ gl.getAlive().size() + "/" + gl.getMaxPlayers());
-
+				
 				Item done = new Item(262);
 				done.setCustomName(TextFormat.DARK_GREEN + "BACK TO LOBBY");
 				p.getInventory().setItem(0, done);
