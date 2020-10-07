@@ -9,7 +9,10 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.form.element.ElementButton;
+import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
@@ -30,13 +33,6 @@ public class Events implements Listener {
 				e.setCancelled(true);
 			}
 		}
-	}
-
-	@EventHandler
-	public void testing(PlayerMoveEvent e){
-
-
-
 	}
 
 	@EventHandler
@@ -86,7 +82,7 @@ public class Events implements Listener {
 			}
 
 			if(fw.id == 3){
-				if(fw.getResponse() != null){
+				if(fw.getResponse() != null && !fw.getResponse().getClickedButton().getText().equals(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars")){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText().split("│")[0].split(" ")[0]).joinPlayer(p);
 				}
 
@@ -128,6 +124,40 @@ public class Events implements Listener {
 			}
 		}
 
+	}
+
+	@EventHandler
+	public void oninteractform(PlayerFormRespondedEvent e){
+		if(e.getWindow() instanceof FormWindowUSWS) {
+			FormWindowUSWS fw = (FormWindowUSWS) e.getWindow();
+			if(fw.getResponse() == null){
+				return;
+			}
+			if(fw.getResponse().getClickedButton().getText().equalsIgnoreCase(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars")){
+
+				FormWindowUSWS fwe = new FormWindowUSWS(3, "Select room", TextFormat.BOLD+""+TextFormat.AQUA+"Select a room");
+
+				ElementButtonImageData im = new ElementButtonImageData("url","https://cloudburstmc.org/data/resource_icons/0/547.jpg?1598194966");
+				ElementButton eb = new ElementButton(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars",im);
+				fwe.addButton(eb);
+
+				for (GameLevel gameLevel : Main.gameLevels) {
+
+					if(!gameLevel.isBuilding() && gameLevel.isWaiting()){
+						TextFormat color = TextFormat.DARK_GREEN;
+						if(gameLevel.getAlive().size() >= gameLevel.getMaxPlayers()/2){
+							color = TextFormat.GOLD;
+						}
+						String text = gameLevel.getWorld()+" │ "+TextFormat.BOLD+""+TextFormat.RESET+gameLevel.getAlive().size()+"/"+gameLevel.getMaxPlayers()+TextFormat.BOLD+color+" ⬤";
+
+						fwe.addButton(new ElementButton(text));
+					}
+
+				}
+
+				e.getPlayer().showFormWindow(fwe);
+			}
+		}
 	}
 
 	@EventHandler
