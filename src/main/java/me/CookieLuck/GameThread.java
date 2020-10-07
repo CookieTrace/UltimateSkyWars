@@ -135,12 +135,12 @@ public class GameThread extends NukkitRunnable {
 				player.setGamemode(3);
 			}
 
-			if(gl.getAlive().size() == 1) {
+			/*if(gl.getAlive().size() == 1) {
 				Player p = gl.getAlive().get(0);
 				gl.win(p);
 				Main.spawnFirework(p.getPosition(), p.getLevel(), DyeColor.BLUE,true,true, ItemFirework.FireworkExplosion.ExplosionType.BURST);
 
-			}
+			}*/
 
 			if (ticksSinceStart == 1) {
 				for (Player p : gl.getAlive()) {

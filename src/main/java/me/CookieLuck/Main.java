@@ -19,6 +19,7 @@ import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.DyeColor;
+import cn.nukkit.utils.TextFormat;
 import org.iq80.leveldb.util.FileUtils;
 
 public class Main extends PluginBase {
@@ -29,6 +30,7 @@ public class Main extends PluginBase {
 
 	@Override
 	public void onEnable() {
+
 		this.loadConfig();
 		this.loadGameLevels();
 
@@ -192,14 +194,14 @@ public class Main extends PluginBase {
 		if(!f.exists()) {
 			f.mkdir();
 		}
+		getServer().getLogger().info("[UltimateSkyWars] Loading rooms...");
 		for(int i = 0; i<f.listFiles().length; i++) {
-			f = new File(this.getDataFolder() + "/GameLevels/"+i);
-			if(!f.exists()) {
-				f.mkdir();
-			}
+
 			GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
-			new GameThread(this, gl.getWorld()).runTaskTimer(this, 0, 1);
+
 		}
+
+		getServer().getLogger().info("[UltimateSkyWars] Rooms loaded!");
 		this.saveBackups();
 	}
 	

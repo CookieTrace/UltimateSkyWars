@@ -33,6 +33,13 @@ public class Events implements Listener {
 	}
 
 	@EventHandler
+	public void testing(PlayerMoveEvent e){
+
+
+
+	}
+
+	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		Server.getInstance().getScheduler().scheduleDelayedTask(this.main, () -> {
@@ -49,7 +56,7 @@ public class Events implements Listener {
 		GameLevel gameLevel = GameLevel.getGameLevelByWorld(((p.getLevel().getName())));
 		if(gameLevel != null){
 			if(!gameLevel.isWaiting() && !gameLevel.isConfiguring() && !gameLevel.isBuilding()){
-				gameLevel.die(p);
+				gameLevel.die(p, EntityDamageEvent.DamageCause.CUSTOM);
 				return;
 			}
 			if(gameLevel.isWaiting()){
@@ -111,7 +118,7 @@ public class Events implements Listener {
 
 			if (e.getDamage() >= p.getHealth()) {
 				e.setCancelled(true);
-				gameLevel.die(p);
+				gameLevel.die(p,e.getCause());
 				if (e instanceof EntityDamageByEntityEvent) {
 					Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
 					if (damager instanceof Player) {

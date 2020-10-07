@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
@@ -49,6 +50,7 @@ public class GameLevel {
 		this.gameStarted = false;
 		this.alive = new ArrayList<>();
 		addToMain();
+		plugin.getLogger().info("[UltimateSkyWars] "+ TextFormat.GOLD+"LOADED ROOM: " + this.world);
 	}
 
 	GameLevel(int id, List<Spawn> spawns,String world, int maxPlayers, Main plugin){
@@ -184,7 +186,8 @@ public class GameLevel {
 
 	//METHODS
 
-	public void die(Player p) {
+	public void die(Player p, EntityDamageEvent.DamageCause cause) {
+
 		p.setGamemode(3);
 		for (Item item : p.getInventory().getContents().values()) {
 			if (item != null && item.getId() != 0) {
@@ -193,13 +196,14 @@ public class GameLevel {
 		}
 		this.alive.remove(p);
 		this.dead.add(p);
+		if(cause.name().equalsIgnoreCase("VOID")) {
+			p.teleport(p.getLevel().getSafeSpawn());
+			p.getServer().getLevelByName(world).addSound(p.getLevel().getSafeSpawn(), Sound.AMBIENT_WEATHER_THUNDER,1,(float)0.8);
+		}
 		p.getInventory().clearAll();
 		p.getUIInventory().clearAll();
 		p.getServer().getLevelByName(world).addSound(p.getLocation(), Sound.AMBIENT_WEATHER_THUNDER,1,(float)0.8);
-		if (p.getPosition().getY() <= 0) {
-			Vector3 pos = new Vector3(p.getPosition().getX(), 40, p.getPosition().getZ());
-			p.teleport(pos);
-		}
+
 	}
 
 	public void win(Player p) {
