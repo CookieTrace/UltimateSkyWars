@@ -18,10 +18,6 @@ public class CommandProcessor {
 					return true;
 				}
 				switch (args[0]) {
-					case "force":
-						gl.setWaiting(false);
-
-							break;
 					case "join":
 						if (!p.hasPermission("usw.join")) {
 							sendNoPerm(p);
