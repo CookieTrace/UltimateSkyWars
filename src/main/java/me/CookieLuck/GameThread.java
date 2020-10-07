@@ -86,11 +86,16 @@ public class GameThread extends NukkitRunnable {
 			String bottom = TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS "
 					+ gl.getAlive().size() + "/" + gl.getMaxPlayers();
 			LinkedList<String> list = new LinkedList<>();
+			list.add("§1");
 			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS ");
+			list.add("§2");
 			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "Players: " + gl.getAlive().size() + "/" + gl.getMaxPlayers());
+			list.add("§3");
 			for (Player player : gl.getAlive()) {
-				player.sendActionBar(bottom);
-				ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				if (this.ticks % 20 == 0) {
+					player.sendActionBar(bottom);
+					ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				}
 				Item item = Item.get(262);
 				item.setCustomName(TextFormat.DARK_GREEN + "BACK TO LOBBY");
 				player.getInventory().setItem(0, item);
@@ -103,26 +108,30 @@ public class GameThread extends NukkitRunnable {
 			String bottom = TextFormat.RED + "" + TextFormat.BOLD + "" +
 					gl.getAlive().size() + " ALIVE" + " | " + gl.getDead().size() + " DEADS";
 			for (Player player : gl.getAlive()) {
-				player.sendActionBar(bottom);
-				LinkedList<String> list = new LinkedList<>();
-				list.add("§1");
-				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Alive: " + gl.getAlive().size() + "   ");
-				list.add("§2");
-				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Kills: " + gl.getPlayerKills(player) + "   ");
-				list.add("§3");
-				ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				if (this.ticks % 20 == 0) {
+					player.sendActionBar(bottom);
+					LinkedList<String> list = new LinkedList<>();
+					list.add("§1");
+					list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Alive: " + gl.getAlive().size() + " ");
+					list.add("§2");
+					list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Kills: " + gl.getPlayerKills(player) + " ");
+					list.add("§3");
+					ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				}
 				player.setGamemode(0);
 			}
 
 			for (Player player : gl.getDead()) {
-				player.sendActionBar(bottom);
-				LinkedList<String> list = new LinkedList<>();
-				list.add("§1");
-				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Alive: " + gl.getAlive().size() + "   ");
-				list.add("§2");
-				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Kills: " + gl.getPlayerKills(player) + "   ");
-				list.add("§3");
-				ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				if (this.ticks % 20 == 0) {
+					player.sendActionBar(bottom);
+					LinkedList<String> list = new LinkedList<>();
+					list.add("§1");
+					list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Alive: " + gl.getAlive().size() + " ");
+					list.add("§2");
+					list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Kills: " + gl.getPlayerKills(player) + " ");
+					list.add("§3");
+					ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				}
 				player.setGamemode(3);
 			}
 

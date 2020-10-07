@@ -8,6 +8,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
@@ -265,11 +266,11 @@ public class GameLevel {
 	}
 
 	public void joinPlayer(Player p){
-		if(building){
+		if(this.building){
 			p.sendMessage(TextFormat.RED + "MAP NOT BUILDED YET, WAIT");
 			return;
-		}else if(!plugin.getServer().isLevelLoaded(world)){
-			plugin.getServer().loadLevel(world);
+		}else if(!this.plugin.getServer().isLevelLoaded(this.world)) {
+			this.plugin.getServer().loadLevel(this.world);
 		}
 
 		if(GameLevel.getGameLevelByWorld(((p.getLevel().getName()))) != null){
@@ -277,23 +278,24 @@ public class GameLevel {
 			return;
 		}
 
-		if(spawnList.size() == maxPlayers){
-
-			Location loc = new Location(this.spawnList.get(this.alive.size()).x,this.spawnList.get(this.alive.size()).y,this.spawnList.get(this.alive.size()).z, p.getServer().getLevelByName(this.world));
-			p.teleport(loc);
-
+		if(this.spawnList.size() == this.maxPlayers){
+			p.teleport(new Position(
+					this.spawnList.get(this.alive.size()).x,
+					this.spawnList.get(this.alive.size()).y,
+					this.spawnList.get(this.alive.size()).z,
+					p.getServer().getLevelByName(this.world)));
 		}else{
-			Location loc = new Location(p.getServer().getLevelByName(this.world).getSpawnLocation().x,p.getServer().getLevelByName(this.world).getSpawnLocation().y,p.getServer().getLevelByName(this.world).getSpawnLocation().z,p.getServer().getLevelByName(this.world));
-			p.teleport(loc);
-		}alive.add(p);
+			p.teleport(p.getServer().getLevelByName(this.world).getSafeSpawn());
+		}
+		this.alive.add(p);
 		p.setGamemode(2);
 	}
 
 	public boolean startableGame() {
-		if (configuring) {
+		if (this.configuring) {
 			return false;
 		}
-		return !emptySpawns;
+		return !this.emptySpawns;
 	}
 	
 	public static GameLevel getGameLevelByWorld(String world) {

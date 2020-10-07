@@ -3,7 +3,6 @@ package me.CookieLuck;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class Main extends PluginBase {
 			fr.close();
 			br.close();
 			
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 			
 		}
 		
@@ -74,7 +73,7 @@ public class Main extends PluginBase {
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();br.readLine();return(Integer.parseInt(br.readLine()));
 
-		}catch(Exception e) {
+		}catch(Exception ignored) {
 
 		}
 		return 0;
@@ -87,7 +86,7 @@ public class Main extends PluginBase {
 			br.readLine();return(br.readLine());
 
 
-		}catch(Exception e) {
+		}catch(Exception ignored) {
 			
 		}
 		return null;
@@ -145,7 +144,7 @@ public class Main extends PluginBase {
 			Field field = entity.getClass().getDeclaredField("lifetime");
 			field.setAccessible(true);
 			field.set(entity, 0);
-		} catch(Exception exc) {}
+		} catch(Exception ignored) {}
 		entity.spawnToAll();
 	}
 
@@ -199,9 +198,9 @@ public class Main extends PluginBase {
 				f.mkdir();
 			}
 			GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
-			new GameThread(this, procesarMundo(i)).runTaskTimer(this, 0, 1);
+			new GameThread(this, gl.getWorld()).runTaskTimer(this, 0, 1);
 		}
-		//this.saveBackups();
+		this.saveBackups();
 	}
 	
 	public void saveGameLevels() {
