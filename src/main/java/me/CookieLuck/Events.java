@@ -153,9 +153,9 @@ public class Events implements Listener {
 					p.getInventory().clearAll();
 					p.getUIInventory().clearAll();
 					if (gameLevel.getSpawnList().size() != gameLevel.getMaxPlayers()) {
-						gameLevel.getSpawnList().add(new Spawn(p.getTargetBlock(1000).getX(),
-								p.getTargetBlock(1000).getY() + 1,
-								p.getTargetBlock(1000).getZ()));
+						gameLevel.getSpawnList().add(new Spawn((int)p.getTargetBlock(1000).getX(),
+								p.getTargetBlock(1000).getY()+1,
+								(int)p.getTargetBlock(1000).getZ()));
 						p.getLevel().addSound(p.getPosition(), Sound.BUBBLE_POP, 1, (float) 0.6);
 					}
 

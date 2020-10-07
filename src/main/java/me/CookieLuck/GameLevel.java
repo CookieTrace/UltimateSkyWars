@@ -284,9 +284,9 @@ public class GameLevel {
 
 		if(this.spawnList.size() == this.maxPlayers){
 			p.teleport(new Position(
-					this.spawnList.get(this.alive.size()).x,
+					this.spawnList.get(this.alive.size()).x+0.5,
 					this.spawnList.get(this.alive.size()).y,
-					this.spawnList.get(this.alive.size()).z,
+					this.spawnList.get(this.alive.size()).z+0.5,
 					p.getServer().getLevelByName(this.world)));
 		}else{
 			p.teleport(p.getServer().getLevelByName(this.world).getSafeSpawn());
