@@ -1,16 +1,16 @@
 package me.CookieLuck;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerDropItemEvent;
-import cn.nukkit.event.player.PlayerFormRespondedEvent;
-import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
-import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
 
@@ -30,6 +30,17 @@ public class Events implements Listener {
 				e.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		Server.getInstance().getScheduler().scheduleDelayedTask(this.main, () -> {
+			if(GameLevel.getGameLevelByWorld(player.getLevel().getName()) != null) {
+				player.teleport(this.main.lobby.getSafeSpawn());
+				player.setGamemode(0);
+			}
+		}, 10);
 	}
 
 	@EventHandler
@@ -101,7 +112,12 @@ public class Events implements Listener {
 			if (e.getDamage() >= p.getHealth()) {
 				e.setCancelled(true);
 				gameLevel.die(p);
-
+				if (e instanceof EntityDamageByEntityEvent) {
+					Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
+					if (damager instanceof Player) {
+						gameLevel.addPlayerKills((Player) damager);
+					}
+				}
 			}
 		}
 
@@ -109,19 +125,24 @@ public class Events implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		GameLevel gameLevel = GameLevel.getGameLevelByWorld(e.getPlayer().getLevel().getName());
-		if(gameLevel == null){
+		Item item = e.getItem();
+		if (item == null) {
+			return;
+		}
+		Player p = e.getPlayer();
+		GameLevel gameLevel = GameLevel.getGameLevelByWorld(p.getLevel().getName());
+		if(gameLevel == null) {
 			return;
 		}
 
-		Player p = e.getPlayer();
-		if (e.getItem().getCustomName().equals(TextFormat.DARK_GREEN + "BACK TO LOBBY")) {
+		if (item.getCustomName().equals(TextFormat.DARK_GREEN + "BACK TO LOBBY")) {
 			gameLevel.leave(p);
 		}
 
+
 		if (gameLevel.isConfiguring()) {
 			if (e.getAction() == Action.RIGHT_CLICK_AIR) {
-				if (e.getItem().getCustomName().equals(TextFormat.DARK_GREEN + "WAND")) {
+				if (item.getCustomName().equals(TextFormat.DARK_GREEN + "WAND")) {
 					p.getInventory().clearAll();
 					p.getUIInventory().clearAll();
 					if (gameLevel.getSpawnList().size() != gameLevel.getMaxPlayers()) {
@@ -131,7 +152,7 @@ public class Events implements Listener {
 						p.getLevel().addSound(p.getPosition(), Sound.BUBBLE_POP, 1, (float) 0.6);
 					}
 
-				}else if (e.getItem().getCustomName().equals(TextFormat.DARK_RED + "BACK")) {
+				}else if (item.getCustomName().equals(TextFormat.DARK_RED + "BACK")) {
 					p.getInventory().clearAll();
 					p.getUIInventory().clearAll();
 					if (gameLevel.getSpawnList().size() > 0) {
@@ -140,7 +161,7 @@ public class Events implements Listener {
 					}
 				}
 			}
-			if (e.getItem().getCustomName().equals(TextFormat.DARK_GREEN + "DONE")) {
+			if (item.getCustomName().equals(TextFormat.DARK_GREEN + "DONE")) {
 				p.getInventory().clearAll();
 				p.getLevel().addSound(p.getPosition(), Sound.RANDOM_LEVELUP, 1, (float) 0.8);
 				gameLevel.setConfiguring(false);

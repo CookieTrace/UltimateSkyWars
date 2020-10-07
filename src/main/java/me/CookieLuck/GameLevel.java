@@ -1,17 +1,17 @@
 package me.CookieLuck;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
-import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.lib.scoreboard.ScoreboardUtil;
 import org.iq80.leveldb.util.FileUtils;
 
 public class GameLevel {
@@ -29,6 +29,7 @@ public class GameLevel {
 	private boolean gameStarted;
 	private List<Player> dead;
 	private List<Player> alive;
+	private HashMap<Player, Integer> playerKills = new HashMap<>();
 
 	//CONSTRUCTOR AND MAIN COMUNICATION
 
@@ -50,7 +51,6 @@ public class GameLevel {
 	}
 
 	GameLevel(int id, List<Spawn> spawns,String world, int maxPlayers, Main plugin){
-
 		this(id,world,maxPlayers,plugin);
 		this.spawnList = spawns;
 		emptySpawns = false;
@@ -169,103 +169,82 @@ public class GameLevel {
 		this.alive = alive;
 	}
 
+	public HashMap<Player, Integer> getPlayerKills() {
+		return this.playerKills;
+	}
+
+	public int getPlayerKills(Player player) {
+		return this.playerKills.getOrDefault(player, 0);
+	}
+
+	public void addPlayerKills(Player player) {
+		this.playerKills.put(player, this.playerKills.getOrDefault(player, 0) + 1);
+	}
+
 	//METHODS
 
-	public void die(Player p){
+	public void die(Player p) {
 		p.setGamemode(3);
-
-		Map<Integer, Item> map = p.getInventory().getContents();
-
-		Iterator<Integer> it = map.keySet().iterator();
-
-		int itemID;
-		while (it.hasNext()) {
-			itemID = it.next();
-			Item item = map.get(itemID);
-			p.dropItem(item);
+		for (Item item : p.getInventory().getContents().values()) {
+			if (item != null && item.getId() != 0) {
+				p.dropItem(item);
+			}
 		}
-		alive.remove(p);
-		dead.add(p);
+		this.alive.remove(p);
+		this.dead.add(p);
 		p.getInventory().clearAll();
+		p.getUIInventory().clearAll();
 		p.getServer().getLevelByName(world).addSound(p.getLocation(), Sound.AMBIENT_WEATHER_THUNDER,1,(float)0.8);
-		if (p.getPosition().getX() <= 0) {
-
-			Position pos = new Position(p.getPosition().getX(), 40, p.getPosition().getZ());
+		if (p.getPosition().getY() <= 0) {
+			Vector3 pos = new Vector3(p.getPosition().getX(), 40, p.getPosition().getZ());
 			p.teleport(pos);
 		}
 	}
 
-	public void win(Player p){
-
-		gameStarted = false;
-		waiting = true;
-		building = true;
+	public void win(Player p) {
+		this.gameStarted = false;
+		this.waiting = true;
+		this.building = true;
 		for (Player player : alive) {
 			player.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + p.getName() + " WON THE GAME!");
 		}
-
 		for (Player player : dead) {
 			player.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + p.getName() + " WON THE GAME!");
 		}
-		alive = new ArrayList<>();
-		dead = new ArrayList<>();
-		new Thread( new Runnable() {
-			public void run()  {
-				try  {
-					Thread.sleep( 5000 );
-				} catch (InterruptedException ignored) {}
-				for(int i = 0; i<alive.size();i++){
-					Location loc = new Location(p.getServer().getDefaultLevel().getSpawnLocation().getX(),p.getServer().getDefaultLevel().getSpawnLocation().getY(),p.getServer().getDefaultLevel().getSpawnLocation().getZ(), p.getServer().getDefaultLevel());
-					alive.get(i).teleport(loc);
-					dead.get(i).setGamemode(0);
-				}
-
-				for (Player player : dead) {
-					Location loc = new Location(p.getServer().getDefaultLevel().getSpawnLocation().getX(), p.getServer().getDefaultLevel().getSpawnLocation().getY(), p.getServer().getDefaultLevel().getSpawnLocation().getZ(), p.getServer().getDefaultLevel());
-					player.teleport(loc);
-					player.setGamemode(0);
-				}
-
-				p.getServer().getLevelByName(world).unload(true);
-
-				File destiny = new File(plugin.getDataFolder()+"../"+"../"+"../"+"/worlds/"+world);
-				File backup = new File(plugin.getDataFolder() + "/LevelBackups/"+world);
+		Server.getInstance().getScheduler().scheduleDelayedTask(this.plugin, () -> {
+			for (Player player : new ArrayList<>(alive)) {
+				this.leave(player);
+			}
+			for (Player player : new ArrayList<>(dead)) {
+				this.leave(player);
+			}
+			p.getServer().getLevelByName(world).unload(true);
+			CompletableFuture.runAsync(() -> {
+				File destiny = new File(plugin.worldsDir + "/" + world);
+				File backup = new File(plugin.getDataFolder() + "/LevelBackups/" + world);
 				FileUtils.copyDirectoryContents(backup,destiny);
 				p.getServer().loadLevel(world);
-
-			}
-		} ).start();
-		new Thread( new Runnable() {
-			public void run()  {
-				try  {
-					Thread.sleep( 30000 );
-				} catch (InterruptedException ignored) {
-
-				}
-
+				//init
+				alive = new ArrayList<>();
+				dead = new ArrayList<>();
+				playerKills.clear();
 				building = false;
-
-
-			}
-		} ).start();
+			});
+		}, 100);
 	}
 
-	public void leave(Player p){
-		Location loc = new Location(plugin.lobby.getSpawnLocation().x,plugin.lobby.getSpawnLocation().y,plugin.lobby.getSpawnLocation().z,plugin.lobby);
-		p.teleport(loc);
+	public void leave(Player p) {
+		p.teleport(this.plugin.lobby.getSafeSpawn());
 		p.setGamemode(0);
-		if(alive.contains(p)){
-			alive.remove(p);
-		}else{
-			dead.remove(p);
-		}
-
 		p.getInventory().clearAll();
-
+		p.getUIInventory().clearAll();
+		this.alive.remove(p);
+		this.dead.remove(p);
+		ScoreboardUtil.getScoreboard().closeScoreboard(p);
 	}
 
+	@Override
 	public String toString(){
-
 		StringBuilder spawnsString = new StringBuilder(id+"\n"+world+"\n"+maxPlayers+"\n");
 		for (Spawn spawn : spawnList) {
 			spawnsString.append(spawn.x)
@@ -274,6 +253,7 @@ public class GameLevel {
 		}
 		return spawnsString.toString();
 	}
+
 	public void joinForcePlayer(Player p){
 		if(!plugin.getServer().isLevelLoaded(world)){
 			plugin.getServer().loadLevel(world);
@@ -283,6 +263,7 @@ public class GameLevel {
 		alive.add(p);
 
 	}
+
 	public void joinPlayer(Player p){
 		if(building){
 			p.sendMessage(TextFormat.RED + "MAP NOT BUILDED YET, WAIT");

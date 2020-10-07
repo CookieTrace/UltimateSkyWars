@@ -1,5 +1,6 @@
 package me.CookieLuck;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import cn.nukkit.Player;
@@ -12,22 +13,22 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.NukkitRunnable;
 import cn.nukkit.utils.DyeColor;
 import cn.nukkit.utils.TextFormat;
-import me.CookieLuck.lib.scoreboard.ltname.Scoreboard;
-import me.CookieLuck.lib.scoreboard.ltname.ScoreboardData;
+import me.CookieLuck.lib.scoreboard.ScoreboardUtil;
 
 public class GameThread extends NukkitRunnable {
-	Main plugin;
-	int tick;
-	long ticks;
-	int doubleTick;
-	GameLevel gl;
-	String map;
-	int ticksSinceStart;
+
+	private Main plugin;
+	private int tick;
+	private long ticks;
+	private int doubleTick;
+	private GameLevel gl;
+	private String map;
+	private int ticksSinceStart;
 
 	public GameThread(Main plugin, String map) {
 		this.plugin = plugin;
 		this.map = map;
-		gl = GameLevel.getGameLevelByWorld(map);
+		this.gl = GameLevel.getGameLevelByWorld(map);
 	}
 
 	@Override
@@ -79,50 +80,63 @@ public class GameThread extends NukkitRunnable {
 		
 	}
 
-	private void inGame(){
-		
-			//METODO A SEGUIR PARA TODOS LOS USUARIOS
-		
+	private void inGame() {
+		//METODO A SEGUIR PARA TODOS LOS USUARIOS
 		if (gl.getAlive().size() != gl.getMaxPlayers() && gl.isWaiting()) {
-
-
-			for (int i = 0; i<gl.getAlive().size(); i++) {
-				Player p  = gl.getAlive().get(i);
-				p.sendActionBar(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS "
-						+ gl.getAlive().size() + "/" + gl.getMaxPlayers());
-				
-				Item done = new Item(262);
-				done.setCustomName(TextFormat.DARK_GREEN + "BACK TO LOBBY");
-				p.getInventory().setItem(0, done);
-				p.getFoodData().setLevel(20);
-				p.setHealth(20);
+			String bottom = TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS "
+					+ gl.getAlive().size() + "/" + gl.getMaxPlayers();
+			LinkedList<String> list = new LinkedList<>();
+			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS ");
+			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "Players: " + gl.getAlive().size() + "/" + gl.getMaxPlayers());
+			for (Player player : gl.getAlive()) {
+				player.sendActionBar(bottom);
+				ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				Item item = Item.get(262);
+				item.setCustomName(TextFormat.DARK_GREEN + "BACK TO LOBBY");
+				player.getInventory().setItem(0, item);
+				player.getFoodData().setLevel(20);
+				player.setHealth(20);
 			}
-		}else{
+		}else {
 			gl.setWaiting(false);
-			List<Player> ps = gl.getAlive();
-			List<Player> psmuertos = gl.getDead();
 
-
-			for (Player player : ps) {
-				player.sendActionBar(TextFormat.RED + "" + TextFormat.BOLD + "" + gl.getAlive().size() + " ALIVE" + " | " + gl.getDead().size() + " DEADS");
+			String bottom = TextFormat.RED + "" + TextFormat.BOLD + "" +
+					gl.getAlive().size() + " ALIVE" + " | " + gl.getDead().size() + " DEADS";
+			for (Player player : gl.getAlive()) {
+				player.sendActionBar(bottom);
+				LinkedList<String> list = new LinkedList<>();
+				list.add("§1");
+				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Alive: " + gl.getAlive().size() + "   ");
+				list.add("§2");
+				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Kills: " + gl.getPlayerKills(player) + "   ");
+				list.add("§3");
+				ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
 				player.setGamemode(0);
 			}
 
-			for (Player psmuerto : psmuertos) {
-				psmuerto.sendActionBar(TextFormat.RED + "" + TextFormat.BOLD + "" + gl.getAlive().size() + " ALIVE" + " | " + gl.getDead().size() + " DEADS");
-				psmuerto.setGamemode(3);
+			for (Player player : gl.getDead()) {
+				player.sendActionBar(bottom);
+				LinkedList<String> list = new LinkedList<>();
+				list.add("§1");
+				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Alive: " + gl.getAlive().size() + "   ");
+				list.add("§2");
+				list.add(TextFormat.GREEN + "" + TextFormat.BOLD + "Kills: " + gl.getPlayerKills(player) + "   ");
+				list.add("§3");
+				ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
+				player.setGamemode(3);
 			}
 
-			if(gl.getAlive().size()==1){
+			if(gl.getAlive().size() == 1) {
 				Player p = gl.getAlive().get(0);
-				gl.win(gl.getAlive().get(0));
-				Main.spawnFirework(p.getPosition(),p.getLevel(), DyeColor.BLUE,true,true, ItemFirework.FireworkExplosion.ExplosionType.BURST);
+				gl.win(p);
+				Main.spawnFirework(p.getPosition(), p.getLevel(), DyeColor.BLUE,true,true, ItemFirework.FireworkExplosion.ExplosionType.BURST);
 
 			}
 
 			if (ticksSinceStart == 1) {
-				for (Player p : ps) {
+				for (Player p : gl.getAlive()) {
 					p.getInventory().clearAll();
+					p.getUIInventory().clearAll();
 					Vector3 pos = new Vector3(p.getX(), p.getY() - 1, p.getZ());
 					p.getLevel().setBlock(pos, Block.get(Block.AIR));
 					p.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + "GO!");
@@ -131,9 +145,9 @@ public class GameThread extends NukkitRunnable {
 				gl.setInvulnerable(true);
 			}
 
-			if(ticksSinceStart == 300){
+			if(ticksSinceStart == 300) {
 				gl.setInvulnerable(false);
-				for (Player p : ps) {
+				for (Player p : gl.getAlive()) {
 					p.getLevel().addSound(p.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 1, (float) 0.7);
 					p.sendTitle("", TextFormat.BLUE + "" + TextFormat.BOLD + "" + "invincibility finished");
 				}
@@ -153,19 +167,19 @@ public class GameThread extends NukkitRunnable {
 				p.setGamemode(1);
 
 				if (gl.getSpawnList().size() != gl.getMaxPlayers()) {
-					Item wand = new Item(280);
+					Item wand = Item.get(280);
 					wand.setCustomName("§2WAND");
 					p.getInventory().setItem(0, wand);
 				}
 
 				if (gl.getSpawnList().size() != 0) {
-					Item back = new Item(257);
+					Item back = Item.get(257);
 					back.setCustomName(TextFormat.DARK_RED + "BACK");
 					p.getInventory().setItem(8, back);
 				}
 
 				if (gl.getSpawnList().size() == gl.getMaxPlayers()) {
-					Item done = new Item(262);
+					Item done = Item.get(262);
 					done.setCustomName(TextFormat.DARK_GREEN + "DONE");
 					p.getInventory().setItem(4, done);
 				}
@@ -174,23 +188,19 @@ public class GameThread extends NukkitRunnable {
 
 		}
 
-		particleEffect();
+		this.particleEffect();
 		
 	}
 
 	private void particleEffect() {
-		for (int i = 0; i < gl.getSpawnList().size(); i++) {
-
+		for (Spawn spawn : gl.getSpawnList()) {
 			Vector3 pos;
 			if (doubleTick <= 20) {
-				pos = new Vector3(gl.getSpawnList().get(i).x + 0.5, gl.getSpawnList().get(i).y + (tick * 0.1),
-						gl.getSpawnList().get(i).z + 0.5);
+				pos = new Vector3(spawn.x + 0.5, spawn.y + (tick * 0.1), spawn.z + 0.5);
 			} else {
-				pos = new Vector3(gl.getSpawnList().get(i).x + 0.5,
-						(gl.getSpawnList().get(i).y + 2) - (tick * 0.1), gl.getSpawnList().get(i).z + 0.5);
+				pos = new Vector3(spawn.x + 0.5, (spawn.y + 2) - (tick * 0.1), spawn.z + 0.5);
 			}
 			plugin.getServer().getLevelByName(gl.getWorld()).addParticleEffect(pos, ParticleEffect.REDSTONE_TORCH_DUST);
-
 		}
 	}
 

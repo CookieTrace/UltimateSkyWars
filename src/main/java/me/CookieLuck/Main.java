@@ -24,15 +24,14 @@ import org.iq80.leveldb.util.FileUtils;
 
 public class Main extends PluginBase {
 
-	static List<GameLevel> gameLevels = new LinkedList<>();
-	String worldsDir;
-	Level lobby;
+	public static List<GameLevel> gameLevels = new LinkedList<>();
+	public String worldsDir;
+	public Level lobby;
 
+	@Override
 	public void onEnable() {
-
-		loadConfig();
-		loadGameLevels();
-
+		this.loadConfig();
+		this.loadGameLevels();
 
 		this.getLogger().info("Ultimate SkyWars Enabled");
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
@@ -40,6 +39,7 @@ public class Main extends PluginBase {
 
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		return CommandProcessor.processCommand(sender, command, args, this);
 	}
@@ -102,7 +102,7 @@ public class Main extends PluginBase {
 			FileWriter fw = new FileWriter(this.getDataFolder()+"/Config.usw");
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.flush();
-			bw.write(getServer().getDefaultLevel().getName()+"\n"+this.getDataFolder()+"../../"+"../"+"/worlds");
+			bw.write(getServer().getDefaultLevel().getName()+ "\n" + this.getServer().getFilePath() + "/worlds");
 			bw.close();
 			fw.close();
 		} catch (IOException ignored) {
@@ -148,7 +148,8 @@ public class Main extends PluginBase {
 		} catch(Exception exc) {}
 		entity.spawnToAll();
 	}
-	void saveBackups(){
+
+	public void saveBackups() {
 		File levels = new File(worldsDir);
 		File destiny = new File(this.getDataFolder() + "/LevelBackups");
 		if(!destiny.exists()) {
@@ -158,12 +159,13 @@ public class Main extends PluginBase {
 			getServer().getLogger().error("[UltimateSkyWars] WORLDS FOLDER NOT FOUND, CHANGE IT ON Config.usw");
 			return;
 		}
-		FileUtils.copyDirectoryContents(levels,destiny);
+		//TODO Only backup game maps
+		FileUtils.copyDirectoryContents(levels, destiny);
 	}
 
-	void loadConfig(){
+	public void loadConfig() {
 
-		File f = new File(this.getDataFolder()+"/Config.usw");
+		File f = new File(this.getDataFolder() + "/Config.usw");
 		if(!f.exists()) {
 			saveLobby();
 		}
@@ -182,24 +184,24 @@ public class Main extends PluginBase {
 
 	}
 
-	void loadGameLevels(){
-			File f = new File(this.getDataFolder()+"/");
-			if(!f.exists()){
-				f.mkdir();
-			}
-			f = new File(this.getDataFolder() + "/GameLevels");
+	void loadGameLevels() {
+		File f = new File(this.getDataFolder()+"/");
+		if(!f.exists()){
+			f.mkdir();
+		}
+		f = new File(this.getDataFolder() + "/GameLevels");
+		if(!f.exists()) {
+			f.mkdir();
+		}
+		for(int i = 0; i<f.listFiles().length; i++) {
+			f = new File(this.getDataFolder() + "/GameLevels/"+i);
 			if(!f.exists()) {
 				f.mkdir();
 			}
-			for(int i = 0; i<f.listFiles().length; i++) {
-				f = new File(this.getDataFolder() + "/GameLevels/"+i);
-				if(!f.exists()) {
-					f.mkdir();
-				}
-				GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
-				new GameThread(this, procesarMundo(i)).runTaskTimer(this, 0, 1);
-			}
-			saveBackups();
+			GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
+			new GameThread(this, procesarMundo(i)).runTaskTimer(this, 0, 1);
+		}
+		//this.saveBackups();
 	}
 	
 	public void saveGameLevels() {
