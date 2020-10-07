@@ -15,6 +15,7 @@ public class FormWindowUSWS extends FormWindow {
     private String content = "";
     private List<ElementButton> buttons;
     int id;
+    String related;
 
     private FormResponseSimple response = null;
 
@@ -23,7 +24,7 @@ public class FormWindowUSWS extends FormWindow {
         this.id = id;
     }
 
-    public FormWindowUSWS(String title, String content, List<ElementButton> buttons){
+    public FormWindowUSWS(String title, String content, List<ElementButton> buttons) {
         this.title = title;
         this.content = content;
         this.buttons = buttons;

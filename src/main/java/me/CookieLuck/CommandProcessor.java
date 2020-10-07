@@ -29,13 +29,13 @@ public class CommandProcessor {
 						}
 						FormWindowUSWS fw = new FormWindowUSWS(3, "Select game", "Select a game");
 						for (GameLevel gameLevel : Main.gameLevels) {
-							if(!gameLevel.isBuilding()){
+							if(!gameLevel.isBuilding() && gameLevel.isWaiting()){
 								TextFormat color = TextFormat.DARK_GREEN;
 								if(gameLevel.getAlive().size() >= gameLevel.getMaxPlayers()/2){
 									color = TextFormat.GOLD;
 								}
 
-								String text = TextFormat.BOLD+gameLevel.getWorld()+" │  "+TextFormat.RESET+gameLevel.getAlive().size()+"/"+gameLevel.getMaxPlayers()+TextFormat.BOLD+color+" ⬤";
+								String text = gameLevel.getWorld()+" │ "+TextFormat.BOLD+""+TextFormat.RESET+gameLevel.getAlive().size()+"/"+gameLevel.getMaxPlayers()+TextFormat.BOLD+color+" ⬤";
 								fw.addButton(new ElementButton(text));
 							}
 

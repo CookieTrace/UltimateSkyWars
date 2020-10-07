@@ -270,8 +270,8 @@ public class GameLevel {
 	}
 
 	public void joinPlayer(Player p){
-		if(this.building){
-			p.sendMessage(TextFormat.RED + "MAP NOT BUILDED YET, WAIT");
+		if(this.building || !this.isWaiting()){
+			p.sendMessage(TextFormat.RED + "Hey, where are you going? wait until you can enter you naughty boy");
 			return;
 		}else if(!this.plugin.getServer().isLevelLoaded(this.world)) {
 			this.plugin.getServer().loadLevel(this.world);
