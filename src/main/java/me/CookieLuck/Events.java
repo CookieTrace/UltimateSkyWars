@@ -174,9 +174,10 @@ public class Events implements Listener {
 				gameLevel.setConfiguring(false);
 				gameLevel.setEmptySpawns(false);
 				gameLevel.setWaiting(true);
-				
+
 				p.sendActionBar(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "NICE!");
 				main.saveGameLevels();
+				new GameThread(gameLevel.getPlugin(),gameLevel.getWorld()).runTaskTimer(gameLevel.getPlugin(), 0, 1);;
 
 			}
 
