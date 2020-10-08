@@ -15,6 +15,7 @@ import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 
 public class Events implements Listener {
@@ -162,24 +163,25 @@ public class Events implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		Item item = e.getItem();
-		if (item == null) {
+		CompoundTag tag = e.getItem() == null ? null : e.getItem().getNamedTag();
+		if (tag == null) {
 			return;
 		}
+		int uswItemType = tag.getInt("UltimateSkyWarsItem");
+
 		Player p = e.getPlayer();
 		GameLevel gameLevel = GameLevel.getGameLevelByWorld(p.getLevel().getName());
 		if(gameLevel == null) {
 			return;
 		}
 
-		if (item.getCustomName().equals(TextFormat.DARK_GREEN + "BACK TO LOBBY")) {
+		if (uswItemType == 10) {
 			gameLevel.leave(p);
+			return;
 		}
-
-
 		if (gameLevel.isConfiguring()) {
 			if (e.getAction() == Action.RIGHT_CLICK_AIR) {
-				if (item.getCustomName().equals(TextFormat.DARK_GREEN + "WAND")) {
+				if (uswItemType == 11) {
 					p.getInventory().clearAll();
 					p.getUIInventory().clearAll();
 					if (gameLevel.getSpawnList().size() != gameLevel.getMaxPlayers()) {
@@ -189,7 +191,7 @@ public class Events implements Listener {
 						p.getLevel().addSound(p.getPosition(), Sound.BUBBLE_POP, 1, (float) 0.6);
 					}
 
-				}else if (item.getCustomName().equals(TextFormat.DARK_RED + "BACK")) {
+				}else if (uswItemType == 12) {
 					p.getInventory().clearAll();
 					p.getUIInventory().clearAll();
 					if (gameLevel.getSpawnList().size() > 0) {
@@ -198,8 +200,9 @@ public class Events implements Listener {
 					}
 				}
 			}
-			if (item.getCustomName().equals(TextFormat.DARK_GREEN + "DONE")) {
+			if (uswItemType == 13) {
 				p.getInventory().clearAll();
+				p.getUIInventory().clearAll();
 				p.getLevel().addSound(p.getPosition(), Sound.RANDOM_LEVELUP, 1, (float) 0.8);
 				gameLevel.setConfiguring(false);
 				gameLevel.setEmptySpawns(false);
@@ -210,9 +213,6 @@ public class Events implements Listener {
 				new GameThread(gameLevel.getPlugin(),gameLevel.getWorld()).runTaskTimer(gameLevel.getPlugin(), 0, 1);;
 
 			}
-
-
-
 		}
 	}
 

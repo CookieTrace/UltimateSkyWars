@@ -3,12 +3,9 @@ package me.CookieLuck;
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.form.element.Element;
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.utils.TextFormat;
-
-import java.io.File;
 
 public class CommandProcessor {
 
@@ -27,8 +24,8 @@ public class CommandProcessor {
 							sendNoPerm(p);
 							return true;
 						}
-						FormWindowUSWS fw = new FormWindowUSWS(3, "Select room", TextFormat.BOLD+""+TextFormat.AQUA+"Select a room");
-
+						FormWindowUSWS fw = new FormWindowUSWS(3, plugin.language.translateString("GUI_GameSelect_Title"),
+								plugin.language.translateString("GUI_GameSelect_Text"));
 						ElementButtonImageData im = new ElementButtonImageData("url","https://cloudburstmc.org/data/resource_icons/0/547.jpg?1598194966");
 						ElementButton eb = new ElementButton(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars",im);
 						fw.addButton(eb);
@@ -74,7 +71,8 @@ public class CommandProcessor {
 							sendNoPerm(p);
 							return true;
 						}
-						FormWindowUSWS fw2 = new FormWindowUSWS(0, "Create GameLevel", "SELECT A MAP");
+						FormWindowUSWS fw2 = new FormWindowUSWS(0, plugin.language.translateString("GUI_CreateRoom_Title"),
+								plugin.language.translateString("GUI_CreateRoom_Text"));
 						for (Integer integer : p.getServer().getLevels().keySet()) {
 							int id = integer;
 							if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
@@ -115,7 +113,7 @@ public class CommandProcessor {
 	}
 
 	private static void sendNoPerm(Player p) {
-		p.sendMessage("You do not have permission to do this command");
+		p.sendMessage(Main.getInstance().language.translateString("Use_Command_NOPermission"));
 	}
 
 	private static void sendHelp(Player player) {

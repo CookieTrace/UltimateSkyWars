@@ -83,8 +83,7 @@ public class GameThread extends NukkitRunnable {
 	private void inGame() {
 		//METODO A SEGUIR PARA TODOS LOS USUARIOS
 		if (gl.getAlive().size() != gl.getMaxPlayers() && gl.isWaiting()) {
-			String bottom = TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS "
-					+ gl.getAlive().size() + "/" + gl.getMaxPlayers();
+			String bottom = plugin.language.translateString("WaitForPlayers_Bottom", gl.getAlive().size(), gl.getMaxPlayers());
 			LinkedList<String> list = new LinkedList<>();
 			list.add("§1");
 			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS ");
@@ -97,7 +96,8 @@ public class GameThread extends NukkitRunnable {
 					ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
 				}
 				Item item = Item.get(262);
-				item.setCustomName(TextFormat.DARK_GREEN + "BACK TO LOBBY");
+				item.setCustomName(this.plugin.language.translateString("BackToLobby"));
+				item.getNamedTag().putInt("UltimateSkyWarsItem", 10);
 				player.getInventory().setItem(0, item);
 				player.getFoodData().setLevel(20);
 				player.setHealth(20);
@@ -148,7 +148,7 @@ public class GameThread extends NukkitRunnable {
 					p.getUIInventory().clearAll();
 					Vector3 pos = new Vector3(p.getX(), p.getY() - 1, p.getZ());
 					p.getLevel().setBlock(pos, Block.get(Block.AIR));
-					p.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + "GO!");
+					p.sendTitle("", plugin.language.translateString("GameStartedTitle"));
 					p.getLevel().addSound(p.getLocation(), Sound.MOB_GHAST_AFFECTIONATE_SCREAM, 1, (float) 0.3);
 				}
 				gl.setInvulnerable(true);
@@ -158,7 +158,7 @@ public class GameThread extends NukkitRunnable {
 				gl.setInvulnerable(false);
 				for (Player p : gl.getAlive()) {
 					p.getLevel().addSound(p.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 1, (float) 0.7);
-					p.sendTitle("", TextFormat.BLUE + "" + TextFormat.BOLD + "" + "invincibility finished");
+					p.sendTitle("", plugin.language.translateString("InvulnerabilityOver"));
 				}
 			}
 		}
@@ -177,19 +177,22 @@ public class GameThread extends NukkitRunnable {
 
 				if (gl.getSpawnList().size() != gl.getMaxPlayers()) {
 					Item wand = Item.get(280);
-					wand.setCustomName("§2WAND");
+					wand.setCustomName(this.plugin.language.translateString("SetSpawn"));
+					wand.getNamedTag().putInt("UltimateSkyWarsItem", 11);
 					p.getInventory().setItem(0, wand);
 				}
 
 				if (gl.getSpawnList().size() != 0) {
 					Item back = Item.get(257);
-					back.setCustomName(TextFormat.DARK_RED + "BACK");
+					back.setCustomName(this.plugin.language.translateString("RemoveSpawn"));
+					back.getNamedTag().putInt("UltimateSkyWarsItem", 12);
 					p.getInventory().setItem(8, back);
 				}
 
 				if (gl.getSpawnList().size() == gl.getMaxPlayers()) {
 					Item done = Item.get(262);
-					done.setCustomName(TextFormat.DARK_GREEN + "DONE");
+					done.setCustomName(this.plugin.language.translateString("DoneSettingsSpawns"));
+					done.getNamedTag().putInt("UltimateSkyWarsItem", 13);
 					p.getInventory().setItem(4, done);
 				}
 

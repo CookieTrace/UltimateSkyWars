@@ -211,10 +211,10 @@ public class GameLevel {
 		this.waiting = true;
 		this.building = true;
 		for (Player player : alive) {
-			player.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + p.getName() + " WON THE GAME!");
+			player.sendTitle("", plugin.language.translateString("GameWin", p.getName()));
 		}
 		for (Player player : dead) {
-			player.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + p.getName() + " WON THE GAME!");
+			player.sendTitle("", plugin.language.translateString("GameWin", p.getName()));
 		}
 		Server.getInstance().getScheduler().scheduleDelayedTask(this.plugin, () -> {
 			for (Player player : new ArrayList<>(alive)) {

@@ -18,20 +18,34 @@ import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.Config;
 import cn.nukkit.utils.DyeColor;
-import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.utils.Language;
 import org.iq80.leveldb.util.FileUtils;
 
 public class Main extends PluginBase {
 
+	private static Main main;
+
 	public static List<GameLevel> gameLevels = new LinkedList<>();
 	public String worldsDir;
 	public Level lobby;
+	public Language language;
+
+	public static Main getInstance() {
+		return main;
+	}
+
+	@Override
+	public void onLoad() {
+		main = this;
+	}
 
 	@Override
 	public void onEnable() {
 
 		this.loadConfig();
+		this.loadLanguage();
 		this.loadGameLevels();
 
 		this.getLogger().info("Ultimate SkyWars Enabled");
@@ -183,6 +197,11 @@ public class Main extends PluginBase {
 		}
 
 
+	}
+
+	public void loadLanguage() {
+		this.saveResource("Language.properties");
+		this.language = new Language(new Config(this.getDataFolder() + "/Language.properties", Config.PROPERTIES));
 	}
 
 	void loadGameLevels() {
