@@ -83,8 +83,7 @@ public class GameThread extends NukkitRunnable {
 	private void inGame() {
 		//METODO A SEGUIR PARA TODOS LOS USUARIOS
 		if (gl.getAlive().size() != gl.getMaxPlayers() && gl.isWaiting()) {
-			String bottom = plugin.language.translateString("WaitForPlayers_Bottom",
-					gl.getAlive().size() + "", gl.getMaxPlayers() + "");
+			String bottom = plugin.language.translateString("WaitForPlayers_Bottom", gl.getAlive().size(), gl.getMaxPlayers());
 			LinkedList<String> list = new LinkedList<>();
 			list.add("§1");
 			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS ");
