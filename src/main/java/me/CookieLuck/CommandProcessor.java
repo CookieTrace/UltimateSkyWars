@@ -53,19 +53,8 @@ public class CommandProcessor {
 							sendNoPerm(p);
 							return true;
 						}
-						FormWindowUSWS fw2 = new FormWindowUSWS(0, plugin.language.translateString("GUI_CreateRoom_Title"),
-								plugin.language.translateString("GUI_CreateRoom_Text"));
-						for (Integer integer : p.getServer().getLevels().keySet()) {
-							int id = integer;
-							if (GameLevel.getGameLevelByWorld(p.getServer().getLevels().get(id).getName()) == null) {
-								if(plugin.getServer().getDefaultLevel() != plugin.getServer().getLevel(id)){
-									ElementButton e = new ElementButton(p.getServer().getLevels().get(id).getName());
-									fw2.addButton(e);
-								}
 
-							}
-						}
-						p.showFormWindow(fw2);
+						p.showFormWindow(USWForms.getCreateRoom(plugin));
 						break;
 					case "setspawns":
 						if (!p.hasPermission("usw.setspawns")) {

@@ -10,8 +10,6 @@ import me.CookieLuck.USWFormWindows.FormWindowUSWS;
 
 public class USWForms {
 
-    static FormWindow selectRoom;
-
     public static FormWindowUSWS getSelectRoom(Main plugin){
         FormWindowUSWS fw = new FormWindowUSWS(3, plugin.language.translateString("GUI_GameSelect_Title"),
                 plugin.language.translateString("GUI_GameSelect_Text"));
@@ -34,5 +32,22 @@ public class USWForms {
         }
         return fw;
     }
+
+    public static FormWindowUSWS getCreateRoom(Main plugin){
+        FormWindowUSWS fw2 = new FormWindowUSWS(0, plugin.language.translateString("GUI_CreateRoom_Title"),
+                plugin.language.translateString("GUI_CreateRoom_Text"));
+        for (Integer integer : plugin.getServer().getLevels().keySet()) {
+            int id = integer;
+            if (GameLevel.getGameLevelByWorld(plugin.getServer().getLevels().get(id).getName()) == null) {
+                if(plugin.getServer().getDefaultLevel() != plugin.getServer().getLevel(id)){
+                    ElementButton e = new ElementButton(plugin.getServer().getLevels().get(id).getName());
+                    fw2.addButton(e);
+                }
+
+            }
+        }
+        return fw2;
+    }
+
 
 }
