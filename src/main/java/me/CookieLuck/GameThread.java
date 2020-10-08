@@ -83,8 +83,8 @@ public class GameThread extends NukkitRunnable {
 	private void inGame() {
 		//METODO A SEGUIR PARA TODOS LOS USUARIOS
 		if (gl.getAlive().size() != gl.getMaxPlayers() && gl.isWaiting()) {
-			String bottom = TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS "
-					+ gl.getAlive().size() + "/" + gl.getMaxPlayers();
+			String bottom = plugin.language.translateString("WaitForPlayers_Bottom",
+					gl.getAlive().size() + "", gl.getMaxPlayers() + "");
 			LinkedList<String> list = new LinkedList<>();
 			list.add("§1");
 			list.add(TextFormat.DARK_GREEN + "" + TextFormat.BOLD + "WAITING FOR PLAYERS ");
@@ -148,7 +148,7 @@ public class GameThread extends NukkitRunnable {
 					p.getUIInventory().clearAll();
 					Vector3 pos = new Vector3(p.getX(), p.getY() - 1, p.getZ());
 					p.getLevel().setBlock(pos, Block.get(Block.AIR));
-					p.sendTitle("", TextFormat.DARK_AQUA + "" + TextFormat.BOLD + "" + "GO!");
+					p.sendTitle("", plugin.language.translateString("GameStartedTitle"));
 					p.getLevel().addSound(p.getLocation(), Sound.MOB_GHAST_AFFECTIONATE_SCREAM, 1, (float) 0.3);
 				}
 				gl.setInvulnerable(true);
@@ -158,7 +158,7 @@ public class GameThread extends NukkitRunnable {
 				gl.setInvulnerable(false);
 				for (Player p : gl.getAlive()) {
 					p.getLevel().addSound(p.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 1, (float) 0.7);
-					p.sendTitle("", TextFormat.BLUE + "" + TextFormat.BOLD + "" + "invincibility finished");
+					p.sendTitle("", plugin.language.translateString("InvulnerabilityOver"));
 				}
 			}
 		}
