@@ -23,8 +23,6 @@ import cn.nukkit.utils.DyeColor;
 import me.CookieLuck.utils.Language;
 import org.iq80.leveldb.util.FileUtils;
 
-import javax.naming.NamingEnumeration;
-
 public class Main extends PluginBase {
 
 	private static Main main;
@@ -36,6 +34,11 @@ public class Main extends PluginBase {
 
 	public static Main getInstance() {
 		return main;
+	}
+
+	@Override
+	public void onLoad() {
+		main = this;
 	}
 
 	@Override
