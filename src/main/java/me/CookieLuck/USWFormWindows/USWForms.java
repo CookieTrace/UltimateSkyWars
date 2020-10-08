@@ -1,9 +1,12 @@
-package me.CookieLuck;
+package me.CookieLuck.USWFormWindows;
 
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.GameLevel;
+import me.CookieLuck.Main;
+import me.CookieLuck.USWFormWindows.FormWindowUSWS;
 
 public class USWForms {
 

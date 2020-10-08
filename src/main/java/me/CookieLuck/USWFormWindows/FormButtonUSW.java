@@ -1,4 +1,4 @@
-package me.CookieLuck;
+package me.CookieLuck.USWFormWindows;
 
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementButtonImageData;

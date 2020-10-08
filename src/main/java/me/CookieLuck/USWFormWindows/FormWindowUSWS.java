@@ -1,4 +1,4 @@
-package me.CookieLuck;
+package me.CookieLuck.USWFormWindows;
 
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.response.FormResponseSimple;
@@ -29,6 +29,8 @@ public class FormWindowUSWS extends FormWindow {
         this.content = content;
         this.buttons = buttons;
     }
+
+    public int getId(){return id;}
 
     public String getTitle() {
         return title;

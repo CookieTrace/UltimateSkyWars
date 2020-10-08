@@ -9,14 +9,13 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
-import cn.nukkit.form.element.ElementButton;
-import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.element.ElementInput;
-import cn.nukkit.form.window.FormWindowSimple;
-import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.USWFormWindows.FormWindowUSW;
+import me.CookieLuck.USWFormWindows.FormWindowUSWS;
+import me.CookieLuck.USWFormWindows.USWForms;
 
 public class Events implements Listener {
 
@@ -72,7 +71,7 @@ public class Events implements Listener {
 		if(e.getWindow() instanceof FormWindowUSWS){
 			FormWindowUSWS fw;
 			fw = (FormWindowUSWS) e.getWindow();
-			if(fw.id == 0){
+			if(fw.getId() == 0){
 				ElementInput ei = new ElementInput("","7");
 				if(fw.getResponse() != null){
 					FormWindowUSW fww = new FormWindowUSW(fw.getResponse().getClickedButton().getText(),"Players");
@@ -82,7 +81,7 @@ public class Events implements Listener {
 
 			}
 
-			if(fw.id == 3){
+			if(fw.getId() == 3){
 				if(fw.getResponse() != null && !fw.getResponse().getClickedButton().getText().equals(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars")){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText().split("│")[0].split(" ")[0]).joinPlayer(p);
 				}
@@ -93,7 +92,7 @@ public class Events implements Listener {
 		if(e.getWindow() instanceof FormWindowUSW){
 			FormWindowUSW fw;
 			fw = (FormWindowUSW) e.getWindow();
-				GameLevel gl = new GameLevel(Main.gameLevels.size(), fw.related,Integer.parseInt(fw.getResponse().getInputResponse(0)),main);
+				GameLevel gl = new GameLevel(Main.gameLevels.size(), fw.getRelated(),Integer.parseInt(fw.getResponse().getInputResponse(0)),main);
 				gl.joinForcePlayer(p);
 		}
 

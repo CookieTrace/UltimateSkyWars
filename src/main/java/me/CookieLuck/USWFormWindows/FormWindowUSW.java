@@ -1,4 +1,4 @@
-package me.CookieLuck;
+package me.CookieLuck.USWFormWindows;
 
 import cn.nukkit.form.element.*;
 import cn.nukkit.form.response.FormResponseCustom;
@@ -39,6 +39,8 @@ public class FormWindowUSW extends FormWindow {
         this.content = contents;
         this.icon = icon;
     }
+
+    public String getRelated(){return related;}
 
     public String getTitle() {
         return title;
