@@ -113,7 +113,7 @@ public class CommandProcessor {
 	}
 
 	private static void sendNoPerm(Player p) {
-		p.sendMessage("You do not have permission to do this command");
+		p.sendMessage(Main.getInstance().language.translateString("Use_Command_NOPermission"));
 	}
 
 	private static void sendHelp(Player player) {

@@ -97,7 +97,8 @@ public class GameThread extends NukkitRunnable {
 					ScoreboardUtil.getScoreboard().showScoreboard(player, "UltimateSkyWars", list);
 				}
 				Item item = Item.get(262);
-				item.setCustomName(TextFormat.DARK_GREEN + "BACK TO LOBBY");
+				item.setCustomName(this.plugin.language.translateString("BackToLobby"));
+				item.getNamedTag().putInt("UltimateSkyWarsItem", 10);
 				player.getInventory().setItem(0, item);
 				player.getFoodData().setLevel(20);
 				player.setHealth(20);
@@ -177,19 +178,22 @@ public class GameThread extends NukkitRunnable {
 
 				if (gl.getSpawnList().size() != gl.getMaxPlayers()) {
 					Item wand = Item.get(280);
-					wand.setCustomName("§2WAND");
+					wand.setCustomName(this.plugin.language.translateString("SetSpawn"));
+					wand.getNamedTag().putInt("UltimateSkyWarsItem", 11);
 					p.getInventory().setItem(0, wand);
 				}
 
 				if (gl.getSpawnList().size() != 0) {
 					Item back = Item.get(257);
-					back.setCustomName(TextFormat.DARK_RED + "BACK");
+					back.setCustomName(this.plugin.language.translateString("RemoveSpawn"));
+					back.getNamedTag().putInt("UltimateSkyWarsItem", 12);
 					p.getInventory().setItem(8, back);
 				}
 
 				if (gl.getSpawnList().size() == gl.getMaxPlayers()) {
 					Item done = Item.get(262);
-					done.setCustomName(TextFormat.DARK_GREEN + "DONE");
+					done.setCustomName(this.plugin.language.translateString("DoneSettingsSpawns"));
+					done.getNamedTag().putInt("UltimateSkyWarsItem", 13);
 					p.getInventory().setItem(4, done);
 				}
 

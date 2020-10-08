@@ -18,7 +18,7 @@ public class Language {
     }
 
     public String translateString(String key, String... params) {
-        String string = this.config.getString(key);
+        String string = this.config.getString(key, "§c Language reading error! ");
         if (params != null && params.length > 0) {
             for (int i = 1; i < params.length + 1; i++) {
                 string = string.replace("%" + i, params[i-1]);
