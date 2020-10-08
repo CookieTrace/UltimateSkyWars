@@ -136,27 +136,7 @@ public class Events implements Listener {
 			}
 			if(fw.getResponse().getClickedButton().getText().equalsIgnoreCase(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars")){
 
-				FormWindowUSWS fwe = new FormWindowUSWS(3, "Select room", TextFormat.BOLD+""+TextFormat.AQUA+"Select a room");
-
-				ElementButtonImageData im = new ElementButtonImageData("url","https://cloudburstmc.org/data/resource_icons/0/547.jpg?1598194966");
-				ElementButton eb = new ElementButton(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars",im);
-				fwe.addButton(eb);
-
-				for (GameLevel gameLevel : Main.gameLevels) {
-
-					if(!gameLevel.isBuilding() && gameLevel.isWaiting()){
-						TextFormat color = TextFormat.DARK_GREEN;
-						if(gameLevel.getAlive().size() >= gameLevel.getMaxPlayers()/2){
-							color = TextFormat.GOLD;
-						}
-						String text = gameLevel.getWorld()+" │ "+TextFormat.BOLD+""+TextFormat.RESET+gameLevel.getAlive().size()+"/"+gameLevel.getMaxPlayers()+TextFormat.BOLD+color+" ⬤";
-
-						fwe.addButton(new ElementButton(text));
-					}
-
-				}
-
-				e.getPlayer().showFormWindow(fwe);
+				e.getPlayer().showFormWindow(USWForms.getSelectRoom(main));
 			}
 		}
 	}
