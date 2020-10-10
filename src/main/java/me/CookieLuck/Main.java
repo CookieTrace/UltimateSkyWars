@@ -9,6 +9,7 @@ import java.util.List;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.item.EntityFirework;
+import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFirework;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
@@ -20,6 +21,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.DyeColor;
+import me.CookieLuck.ChestSystem.ItemList;
 import me.CookieLuck.utils.Language;
 import org.iq80.leveldb.util.FileUtils;
 
@@ -204,19 +206,41 @@ public class Main extends PluginBase {
 		this.language = new Language(new Config(this.getDataFolder() + "/Language.properties", Config.PROPERTIES));
 	}
 
+	public ItemList getItemList(int id){
+		ItemList il = new ItemList(true);
+		try {
+			FileReader fr = new FileReader(this.getDataFolder() + "/GameLevels/"+id+"/Chests.uws");
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while((line = br.readLine()) != null){
+				Item item = new Item(Integer.parseInt(line));
+				il.addItem(item);
+			}
+			br.close();
+			fr.close();
+			
+		}catch(Exception ignored) {
+
+		}
+		return il;
+	}
+
 	void loadGameLevels() {
+
 		File f = new File(this.getDataFolder()+"/");
 		if(!f.exists()){
 			f.mkdir();
 		}
+
 		f = new File(this.getDataFolder() + "/GameLevels");
 		if(!f.exists()) {
 			f.mkdir();
 		}
+
 		getServer().getLogger().info("[UltimateSkyWars] Loading rooms...");
 		for(int i = 0; i<f.listFiles().length; i++) {
 
-			GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this);
+			GameLevel gl = new GameLevel(i, procesarSpawns(i), procesarMundo(i), getMaxPlayers(i), this, getItemList(i));
 
 		}
 
@@ -237,6 +261,13 @@ public class Main extends PluginBase {
 				fw.flush();
 				bw.write(gameLevel.toString());
 				bw.close();
+				fw.close();
+
+				fw = new FileWriter(getDataFolder() + "/GameLevels/" + gameLevel.getId() + "/Chests.uws");
+				BufferedWriter bww = new BufferedWriter(fw);
+				fw.flush();
+				bww.write(gameLevel.getItemList().toString());
+				bww.close();
 				fw.close();
 
 			} catch (IOException e) {

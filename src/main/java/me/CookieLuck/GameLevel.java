@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
@@ -13,6 +14,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.ChestSystem.ItemList;
 import me.CookieLuck.lib.scoreboard.ScoreboardUtil;
 import org.iq80.leveldb.util.FileUtils;
 
@@ -32,8 +34,11 @@ public class GameLevel {
 	private List<Player> dead;
 	private List<Player> alive;
 	private HashMap<Player, Integer> playerKills = new HashMap<>();
-
+	private ItemList itemList;
+	private Map<Player, Block> chestToDestroy;
 	//CONSTRUCTOR AND MAIN COMUNICATION
+
+	//New born room
 
 	GameLevel(int id, String world, int maxPlayers, Main plugin){
 		this.building = false;
@@ -49,15 +54,25 @@ public class GameLevel {
 		this.dead = new ArrayList<>();
 		this.gameStarted = false;
 		this.alive = new ArrayList<>();
+		this.chestToDestroy = new HashMap<Player, Block>();
+		itemList = new ItemList(false);
 		addToMain();
 		plugin.getLogger().info("[UltimateSkyWars] "+ TextFormat.GOLD+"LOADED ROOM: " + this.world);
 	}
 
-	GameLevel(int id, List<Spawn> spawns,String world, int maxPlayers, Main plugin){
+	//Loaded room
+
+	GameLevel(int id, List<Spawn> spawns,String world, int maxPlayers, Main plugin, ItemList il){
+
 		this(id,world,maxPlayers,plugin);
 		this.spawnList = spawns;
+		this.itemList = il;
 		emptySpawns = false;
 
+	}
+
+	public void loadChestItems(ItemList itemList){
+		this.itemList = itemList;
 	}
 
 	private void addToMain(){
@@ -67,6 +82,8 @@ public class GameLevel {
 	}
 
 	//GETTERS AND SETTERS
+
+	public ItemList getItemList(){return itemList;}
 
 	public int getId() {
 		return id;
@@ -314,6 +331,16 @@ public class GameLevel {
 	public static GameLevel getGameLevelById(int id) {
 		return Main.gameLevels.get(id);
 	}
-	
 
+	public Block getChestToDestroy(Player p) {
+		return chestToDestroy.get(p);
+	}
+
+	public void addChest(Player p, Block block) {
+		chestToDestroy.put(p,block);
+	}
+
+	public void removeChest(Player p) {
+		chestToDestroy.remove(p);
+	}
 }

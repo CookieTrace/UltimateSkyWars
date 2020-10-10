@@ -20,6 +20,7 @@ public class CommandProcessor {
 					return true;
 				}
 				switch (args[0]) {
+
 					case "join":
 						if (!p.hasPermission("usw.join")) {
 							sendNoPerm(p);

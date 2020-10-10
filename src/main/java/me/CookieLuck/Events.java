@@ -2,17 +2,28 @@ package me.CookieLuck;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
+import cn.nukkit.blockentity.BlockEntityChest;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.inventory.InventoryCloseEvent;
+import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.inventory.BaseInventory;
+import cn.nukkit.inventory.ChestInventory;
+import cn.nukkit.inventory.Inventory;
+import cn.nukkit.inventory.InventoryType;
+import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Sound;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
+import me.CookieLuck.ChestSystem.ItemList;
 import me.CookieLuck.USWFormWindows.FormWindowUSW;
 import me.CookieLuck.USWFormWindows.FormWindowUSWS;
 import me.CookieLuck.USWFormWindows.USWForms;
@@ -44,6 +55,59 @@ public class Events implements Listener {
 				player.setGamemode(0);
 			}
 		}, 10);
+	}
+
+	@EventHandler
+	public void openChest(PlayerInteractEvent e){
+		if(e.getBlock().getId() == Block.CHEST || e.getBlock().getFullId() == 45.4){
+			Player p = e.getPlayer();
+			if(GameLevel.getGameLevelByWorld(p.getLevel().getName()) == null){
+				return;
+			}
+			GameLevel gl = GameLevel.getGameLevelByWorld(p.getLevel().getName());
+			gl.addChest(p,e.getBlock());
+
+
+		}
+	}
+
+
+	@EventHandler
+	public void openChestInventory(InventoryOpenEvent e){
+		if(GameLevel.getGameLevelByWorld(e.getPlayer().getLevel().getName()) == null){
+			return;
+		}
+		if(e.getInventory().getName().equalsIgnoreCase("Chest")){
+			ItemList il = GameLevel.getGameLevelByWorld(e.getPlayer().getLevel().getName()).getItemList();
+
+			for(int i = 0; i<e.getInventory().getSize(); i++){
+				if(Math.random() < 0.5){
+					e.getInventory().setItem(i,il.getItems().get((int)(Math.random() * (il.getItems().size() - 0) + 0)));
+				}
+
+			}
+		}
+
+	}
+
+	@EventHandler
+	public void closeChest(InventoryCloseEvent e){
+		if(e.getInventory().getName().equalsIgnoreCase("Chest")){
+			Player p = e.getPlayer();
+			if(GameLevel.getGameLevelByWorld(p.getLevel().getName()) == null){
+				return;
+			}
+
+			GameLevel gl = GameLevel.getGameLevelByWorld(p.getLevel().getName());
+			Block b = gl.getChestToDestroy(p);
+
+			p.getLevel().setBlock(b.getLocation(), Block.get(Block.AIR));
+			Vector3 loc = new Vector3(b.getX()+0.5,b.getY(),b.getZ()+0.5);
+			p.getLevel().addParticleEffect(loc, ParticleEffect.EXPLOSION_DEATH);
+
+			p.getLevel().addSound(p.getLocation(),Sound.BLOCK_TURTLE_EGG_DROP,1,1);
+			gl.removeChest(p);
+		}
 	}
 
 	@EventHandler
@@ -85,6 +149,10 @@ public class Events implements Listener {
 				if(fw.getResponse() != null && !fw.getResponse().getClickedButton().getText().equals(TextFormat.DARK_AQUA+""+TextFormat.BOLD+"Ultimate"+TextFormat.DARK_GREEN+"SkyWars")){
 					GameLevel.getGameLevelByWorld(fw.getResponse().getClickedButton().getText().split("│")[0].split(" ")[0]).joinPlayer(p);
 				}
+
+			}
+
+			if(fw.getId() == 9){
 
 			}
 		}
